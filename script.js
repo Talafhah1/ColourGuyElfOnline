@@ -82,8 +82,14 @@ let generate_button = document.getElementById('generate-button');
 let copy_button = document.getElementById('copy-button');
 let error_message = document.getElementById('error-message');
 
-generate_button.addEventListener('click', () => { editor.setValue(colour_scheme.generateXML()); });
 copy_button.addEventListener('click', () => { navigator.clipboard.writeText(editor.getValue()); });
+
+generate_button.addEventListener('click', () =>
+{
+	editor.setValue(colour_scheme.generateXML());
+	error_message.innerHTML = '';
+});
+
 load_button.addEventListener('click', () =>
 {
 	try { colour_scheme.loadXML(editor.getValue()); }
