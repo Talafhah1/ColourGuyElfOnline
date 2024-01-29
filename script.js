@@ -33,9 +33,9 @@ class ColorSchemeType
 
 	generateXML()
 	{
-		let xml = '<ColorSchemeType>\n';
-		for (let prop in this) if (typeof this[prop] != 'function') xml += '\t<' + prop + '>0x' + this[prop].toString(16).padStart(6, '0').toUpperCase() + '</' + prop + '>\n';
-		xml += '</ColorSchemeType>';
+		let xml = "<ColorSchemeType>\n";
+		for (let prop in this) if (typeof this[prop] != "function") xml += "\t<" + prop + ">0x" + this[prop].toString(16).padStart(6, '0').toUpperCase() + "</" + prop + ">\n";
+		xml += "</ColorSchemeType>";
 		return xml;
 	}
 
@@ -44,16 +44,92 @@ class ColorSchemeType
 		try
 		{
 			let parser = new DOMParser();
-			let xmlDoc = parser.parseFromString(xml, 'text/xml');
-			let xmlNode = xmlDoc.getElementsByTagName('ColorSchemeType')[0];
-			if (!xmlNode) throw new Error('ColorSchemeType not found in XML');
+			let xml_doc = parser.parseFromString(xml, "text/xml");
+			let xml_node = xml_doc.getElementsByTagName("ColorSchemeType")[0];
+			if (!xml_node) throw new Error("ColorSchemeType not found in XML");
 			for (let prop in this)
 			{
-				if (typeof this[prop] != 'function')
+				if (typeof this[prop] != "function")
 				{
-					let valueNode = xmlNode.getElementsByTagName(prop)[0];
-					if (!valueNode || !valueNode.childNodes[0]) throw new Error(`Missing or invalid value for property ${prop}`);
-					let value = valueNode.childNodes[0].nodeValue;
+					let value_node = xml_node.getElementsByTagName(prop)[0];
+					if (!value_node || !value_node.childNodes[0]) throw new Error(`Missing or invalid value for property ${prop}`);
+					let value = value_node.childNodes[0].nodeValue;
+					let result = parseInt(value, 16);
+					if (isNaN(result)) throw new Error(`Invalid value for property ${prop}`);
+					else this[prop] = result;
+				}
+			}
+		}
+		catch (error)
+		{
+			console.error(`Failed to load XML: ${error.message}`);
+			throw error;
+		}
+	}
+}
+
+class GameColorSchemeType extends ColorSchemeType
+{
+	DisplayNameKey;
+	OrderID;
+	TeamColor = 0;
+
+	generateXML()
+	{
+		let xml = super.generateXML();
+		xml = xml.replace(/<DisplayNameKey>.*<\/DisplayNameKey>\n/, '');
+		xml = xml.replace(/<OrderID>.*<\/OrderID>\n/, '');
+		xml = xml.replace(/<TeamColor>.*<\/TeamColor>\n/, '');
+		xml = xml.replace(/>\s*<\/ColorSchemeType>/, ">\n</ColorSchemeType>");
+		return xml;
+	}
+
+	loadXML(xml)
+	{
+		try
+		{
+			let parser = new DOMParser();
+			let xml_doc = parser.parseFromString(xml, "text/xml");
+			let xml_node = xml_doc.getElementsByTagName("ColorSchemeType")[0];
+			if (!xml_node) throw new Error("ColorSchemeType not found in XML");
+			for (let prop in this)
+			{
+				if (prop === "DisplayNameKey")
+				{
+					let value_node = xml_node.getElementsByTagName(prop)[0];
+					if (!value_node || !value_node.childNodes[0]) throw new Error(`Missing or invalid value for property ${prop}`);
+					let value = value_node.childNodes[0].nodeValue;
+					this[prop] = value;
+				}
+				else if (prop === "TeamColor")
+				{
+					let value_node = xml_node.getElementsByTagName(prop)[0];
+					if (!value_node || !value_node.childNodes[0]) this[prop] = 0;
+					else
+					{
+						let value = value_node.childNodes[0].nodeValue;
+						let result = parseInt(value);
+						if (isNaN(result)) throw new Error(`Invalid value for property ${prop}`);
+						else this[prop] = result;
+					}
+				}
+				else if (prop === "OrderID")
+				{
+					let value_node = xml_node.getElementsByTagName(prop)[0];
+					if (!value_node || !value_node.childNodes[0]) this[prop] = 0;
+					else
+					{
+						let value = value_node.childNodes[0].nodeValue;
+						let result = parseInt(value);
+						if (isNaN(result)) throw new Error(`Invalid value for property ${prop}`);
+						else this[prop] = result;
+					}
+				}
+				else if (typeof this[prop] != "function")
+				{
+					let value_node = xml_node.getElementsByTagName(prop)[0];
+					if (!value_node || !value_node.childNodes[0]) throw new Error(`Missing or invalid value for property ${prop}`);
+					let value = value_node.childNodes[0].nodeValue;
 					let result = parseInt(value, 16);
 					if (isNaN(result)) throw new Error(`Invalid value for property ${prop}`);
 					else this[prop] = result;
@@ -177,21 +253,21 @@ var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
 	htmlMode: true
 });
 
-let load_button = document.getElementById('load-button');
-let generate_button = document.getElementById('generate-button');
-let copy_button = document.getElementById('copy-button');
-let error_message = document.getElementById('error-message');
-let shade_button = document.getElementById('shade-button');
+let load_button = document.getElementById("load-button");
+let generate_button = document.getElementById("generate-button");
+let copy_button = document.getElementById("copy-button");
+let error_message = document.getElementById("error-message");
+let shade_button = document.getElementById("shade-button");
 
-copy_button.addEventListener('click', () => { navigator.clipboard.writeText(editor.getValue()); });
+copy_button.addEventListener("click", () => { navigator.clipboard.writeText(editor.getValue()); });
 
-generate_button.addEventListener('click', () =>
+generate_button.addEventListener("click", () =>
 {
 	editor.setValue(colour_scheme.generateXML());
 	error_message.innerHTML = '';
 });
 
-load_button.addEventListener('click', () =>
+load_button.addEventListener("click", () =>
 {
 	try { colour_scheme.loadXML(editor.getValue()); }
 	catch (error)
@@ -202,7 +278,7 @@ load_button.addEventListener('click', () =>
 	error_message.innerHTML = '';
 	editor.setValue(colour_scheme.generateXML());
 
-	let tds = document.getElementsByTagName('td');
+	let tds = document.getElementsByTagName("td");
 	for (let td of tds)
 	{
 		let colour = colour_scheme[td.className];
@@ -214,18 +290,17 @@ load_button.addEventListener('click', () =>
 	}
 });
 
-
-shade_button.addEventListener('click', () =>
+shade_button.addEventListener("click", () =>
 {
-	let trs = document.getElementsByTagName('tr');
+	let trs = document.getElementsByTagName("tr");
 	let base_tr = null;
-	for (let tr of trs) if (tr.className === 'Base-tr') base_tr = tr;
+	for (let tr of trs) if (tr.className === "Base-tr") base_tr = tr;
 	for (let tr of trs) if (tr !== base_tr)
 	{
-		let tds = tr.getElementsByTagName('td');
+		let tds = tr.getElementsByTagName("td");
 		for (let td of tds)
 		{
-			if (td.firstChild && td.firstChild.tagName === 'INPUT')
+			if (td.firstChild && td.firstChild.tagName === "INPUT")
 			{
 				let base_name = td.className.split(/(?=[A-Z])/)[0];
 				let base_td = base_tr.getElementsByClassName(`${base_name}_Swap`)[0];
@@ -233,11 +308,11 @@ shade_button.addEventListener('click', () =>
 				let shade = 0;
 				const shades =
 				{
-					'VD': -2,
-					'Dk': -1,
-					'Lt': 1,
-					'VL': 2,
-					'Acc': 3
+					"VD": -2,
+					"Dk": -1,
+					"Lt": 1,
+					"VL": 2,
+					"Acc": 3
 				};
 				for (let key in shades)
 				{
@@ -255,8 +330,8 @@ shade_button.addEventListener('click', () =>
 	}
 });
 
-let inputs = document.getElementsByTagName('input');
-for (let input of inputs) input.addEventListener('change', () =>
+let inputs = document.getElementsByTagName("input");
+for (let input of inputs) input.addEventListener("change", () =>
 {
 	let colorValue = parseInt(input.value.slice(1), 16);
 	colour_scheme[input.parentNode.className] = colorValue !== 0 ? colorValue : 0x010101;
@@ -265,24 +340,91 @@ for (let input of inputs) input.addEventListener('change', () =>
 editor.setValue(colour_scheme.generateXML());
 load_button.click();
 
-let colour_schemes = [];
-let xml = new XMLHttpRequest();
-xml.open('GET', 'ColourSchemeTypes.xml', true);
-xml.onreadystatechange = () =>
+var colour_schemes = [];
+async function loadColourSchemes()
 {
-	if (xml.readyState === 4 && xml.status === 200)
-	{
-		let parser = new DOMParser();
-		let xmlDoc = parser.parseFromString(xml.responseText, 'text/xml');
-		let xmlNodes = xmlDoc.getElementsByTagName('ColorSchemeType');
-		for (let xmlNode of xmlNodes)
-		{
-			let colour_scheme = new ColorSchemeType();
-			colour_scheme.loadXML(xmlNode.outerHTML);
-			colour_schemes.push(colour_scheme);
-		}
-	}
-};
-xml.send();
+	let urls =
+	[
+		"https://raw.githubusercontent.com/Talafhah1/ColourGuyElfOnline/main/ColorSchemeTypes.xml",
+		"https://raw.githubusercontent.com/Talafhah1/ColourGuyElfOnline/main/stringTable.tsv"
+	];
 
-console.log(colour_schemes)
+	let [xml_response, tsv_response] = await Promise.all(urls.map(url => fetch(url)));
+
+	let xml_text = await xml_response.text();
+	let tsv_text = await tsv_response.text();
+
+	let parser = new DOMParser();
+	let xml_doc = parser.parseFromString(xml_text, "text/xml");
+	let xml_nodes = xml_doc.getElementsByTagName("ColorSchemeType");
+
+	colour_schemes = [];
+	for (let xml_node of xml_nodes)
+	{
+		if (["NO_COLOR_SCHEME", "Template"].includes(xml_node.getAttribute("ColorSchemeName"))) continue;
+		let colour_scheme = new GameColorSchemeType();
+		colour_scheme.loadXML(xml_node.outerHTML);
+		colour_schemes.push(colour_scheme);
+	}
+
+	colour_schemes.sort((a, b) =>
+	{
+		if (a.TeamColor === b.TeamColor)
+		{
+			if (a.OrderID === 0) return 1;
+			else if (b.OrderID === 0) return -1;
+			else return a.OrderID - b.OrderID;
+		}
+		else return a.TeamColor - b.TeamColor;
+	});
+
+	let lines = tsv_text.split("\n");
+	let string_table = {};
+	for (let line of lines)
+	{
+		let [key, value] = line.split("\t");
+		string_table[key] = value;
+	}
+	for (let colour_scheme of colour_schemes)
+	{
+		let name = string_table[colour_scheme.DisplayNameKey];
+		if (name) colour_scheme.DisplayNameKey = name;
+	}
+
+	return colour_schemes;
+}
+
+let select = document.getElementById("select-dropdown");
+let dud_option_std = document.createElement("option");
+dud_option_std.value = '';
+dud_option_std.innerHTML = "Standard Colour Schemes";
+dud_option_std.disabled = true;
+dud_option_std.style.color = "grey";
+select.prepend(dud_option_std);
+let dud_option_team = document.createElement("option");
+dud_option_team.value = '';
+dud_option_team.innerHTML = "Team Colour Schemes";
+dud_option_team.disabled = true;
+dud_option_team.style.color = "grey";
+
+loadColourSchemes().then(colour_schemes =>
+{
+	let seen_team = false;
+	for (let colour_scheme of colour_schemes)
+	{
+		if (colour_scheme.TeamColor !== 0 && !seen_team) { select.appendChild(dud_option_team); seen_team = true; }
+		let option = document.createElement("option");
+		option.value = colour_scheme.DisplayNameKey;
+		option.innerHTML = colour_scheme.DisplayNameKey;
+		select.appendChild(option);
+	}
+});
+
+select.addEventListener("change", () =>
+{
+	let colour_scheme = new GameColorSchemeType();
+	let colour_scheme_name = select.value;
+	for (let scheme of colour_schemes) if (scheme.DisplayNameKey === colour_scheme_name) colour_scheme = scheme;
+	editor.setValue(colour_scheme.generateXML());
+	select.selectedIndex = 0;
+});
