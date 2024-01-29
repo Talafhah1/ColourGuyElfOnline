@@ -16,14 +16,13 @@
 			<table>
 				<tr>
 					<td></td>
-					<td><p class="table-label table-header">Hair</p></td>
-					<td><p class="table-label table-header">Body 1</p></td>
-					<td><p class="table-label table-header">Body 2</p></td>
-					<td><p class="table-label table-header">Special</p></td>
-					<td><p class="table-label table-header">Cloth</p></td>
-					<td><p class="table-label table-header">Weapon</p></td>
-					
-				<tr> 
+					<td><p class="table-label table-header" title="Mostly used for hair and some cloth- and leather-like materials">Hair</p></td>
+					<td><p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Primary&quot;">Body 1</p></td>
+					<td><p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Secondary&quot;">Body 2</p></td>
+					<td><p class="table-label table-header" title="Typically used for highlights, accent objects, and some hairs; sometimes referred to as &quot;Tertiary&quot;">Special</p></td>
+					<td><p class="table-label table-header" title="Mostly used for cloth- and leather-like materials, especially trousers and undergarments">Cloth</p></td>
+					<td><p class="table-label table-header" title="Mostly used for metallic materials; often referred to as &quot;Metal&quot;">Weapon</p></td>
+				<tr class="VL-tr">
 					<td><p class="table-label">Very Light</p></td>
 					<td></td>
 					<td class="Body1VL_Swap"><input type="color" id="color-input"></td>
@@ -32,7 +31,7 @@
 					<td class="ClothVL_Swap"><input type="color" id="color-input"></td>
 					<td class="WeaponVL_Swap"><input type="color" id="color-input"></td>
 				</tr>
-				<tr>
+				<tr class="Lt-tr">
 					<td><p class="table-label">Light</p></td>
 					<td class="HairLt_Swap"><input type="color" id="color-input"></td>
 					<td class="Body1Lt_Swap"><input type="color" id="color-input"></td>
@@ -41,7 +40,7 @@
 					<td class="ClothLt_Swap"><input type="color" id="color-input"></td>
 					<td class="WeaponLt_Swap"><input type="color" id="color-input"></td>
 				</tr>
-				<tr>
+				<tr class="Base-tr">
 					<td><p class="table-label">Base</p></td>
 					<td class="Hair_Swap"><input type="color" id="color-input"></td>
 					<td class="Body1_Swap"><input type="color" id="color-input"></td>
@@ -50,7 +49,7 @@
 					<td class="Cloth_Swap"><input type="color" id="color-input"></td>
 					<td class="Weapon_Swap"><input type="color" id="color-input"></td>
 				</tr>
-				<tr>
+				<tr class="Dk-tr">
 					<td><p class="table-label">Dark</p></td>
 					<td class="HairDk_Swap"><input type="color" id="color-input"></td>
 					<td class="Body1Dk_Swap"><input type="color" id="color-input"></td>
@@ -59,7 +58,7 @@
 					<td class="ClothDk_Swap"><input type="color" id="color-input"></td>
 					<td class="WeaponDk_Swap"><input type="color" id="color-input"></td>
 				</tr>
-				<tr>
+				<tr class="VD-tr">
 					<td><p class="table-label">Very Dark</p></td>
 					<td></td>
 					<td class="Body1VD_Swap"><input type="color" id="color-input"></td>
@@ -68,9 +67,9 @@
 					<td></td>
 					<td></td>
 				</tr>
-				<tr>
+				<tr class="Acc-tr">
 					<td><p class="table-label">Accent</p></td>
-					<td></td>
+					<td class="shade-td"><button id="shade-button" class="shade-button" title="Automatically calculate all shades based on the Base shade">Auto Shade</button></td>
 					<td class="Body1Acc_Swap"><input type="color" id="color-input"></td>
 					<td class="Body2Acc_Swap"><input type="color" id="color-input"></td>
 					<td class="SpecialAcc_Swap"><input type="color" id="color-input"></td>
@@ -82,9 +81,9 @@
 		<div class="xml-area">
 			<div class="button-carrousel">
 				<p id="error-message" class="error-message"></p>
-				<button id="load-button">Load</button>
-				<button id="generate-button">Generate</button>
-				<button id="copy-button">Copy</button>
+				<button id="load-button" title="Load XML into colour grid">Load</button>
+				<button id="generate-button" title="Generate XML based on current colour grid">Generate</button>
+				<button id="copy-button" title="Copy XML to clipboard">Copy</button>
 			</div>
 			<textarea spellcheck="false" id="xml-input" class="xml-editor"></textarea>
 		</div>
