@@ -149,7 +149,8 @@ function shadeColour(colour, shade)
 	let hsv = rgbToHsv(colour >> 16, (colour >> 8) & 0xFF, colour & 0xFF);
 	if (shade === 3)
 	{
-		hsv[0] = (hsv[0] + Math.floor(Math.random() * 60) - 30) % 360;
+		if (hsv[1] !== 0) hsv[0] = (hsv[0] + Math.floor(Math.random() * 60) - 30) % 360;
+		else hsv[0] = Math.floor(Math.random() * 360);
 		hsv[1] = 255;
 		hsv[2] = Math.max(hsv[2], 128);
 	}
