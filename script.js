@@ -68,6 +68,105 @@ class ColorSchemeType
 	}
 }
 
+function degrees(radians) { return radians * (180 / Math.PI); }
+
+function rgbToHsv(r, g, b)
+{
+	const max = Math.max(r, g, b);
+	const min = Math.min(r, g, b);
+	const v = max / 255;
+	let s;
+	if (max > 0) s = 1 - min / max;
+	else s = 0;
+	let h;
+	if (r === g && g === b) h = 0;
+	else
+	{
+		h = Math.acos((r - g / 2 - b / 2) / Math.sqrt(r * r + g * g + b * b - r * g - r * b - g * b));
+		h = degrees(h);
+	}
+	if (b > g) h = 360 - h;
+	return [h, s * 255, v * 255];
+}
+
+function hsvToRgb(h, s, v)
+{
+	const max = v;
+	const min = max * (1 - s / 255);
+	const z = (max - min) * (1 - Math.abs((h / 60) % 2 - 1));
+	let r, g, b;
+	if (h >= 0 && h < 300)
+	{
+		switch (true)
+		{
+			case (h < 60):
+			{
+				r = max;
+				g = z + min;
+				b = min;
+				break;
+			}
+			case (h < 120):
+			{
+				r = z + min;
+				g = max;
+				b = min;
+				break;
+			}
+			case (h < 180):
+			{
+				r = min;
+				g = max;
+				b = z + min;
+				break;
+			}
+			case (h < 240):
+			{
+				r = min;
+				g = z + min;
+				b = max;
+				break;
+			}
+			default:
+			{
+				r = z + min;
+				g = min;
+				b = max;
+			}
+		}
+	}
+	else
+	{
+	    r = max;
+	    g = min;
+	    b = z + min;
+	}
+	return [Math.round(r), Math.round(g), Math.round(b)];
+}
+
+function shadeColour(colour, shade)
+{
+	let hsv = rgbToHsv(colour >> 16, (colour >> 8) & 0xFF, colour & 0xFF);
+	if (shade === 3)
+	{
+		hsv[0] = (hsv[0] + Math.floor(Math.random() * 60) - 30) % 360;
+		hsv[1] = 255;
+		hsv[2] = Math.max(hsv[2], 128);
+	}
+	else
+	{
+		hsv[0] = (hsv[0] > 180 || hsv[0] === 0) ? (hsv[0] - 3 * shade) % 360 : (hsv[0] + 3 * shade) % 360;
+		hsv[1] *= [2, Math.sqrt(2), 1, Math.sqrt(2) / 2, 0.5][shade + 2];
+		hsv[2] *= Math.min([0.5, Math.sqrt(2) / 2, 1, Math.sqrt(2), 2][shade + 2], 255);
+	}
+	if (hsv[0] < 0) hsv[0] += 360;
+	hsv[1] = Math.min(hsv[1], 255);
+	hsv[2] = Math.min(hsv[2], 255);
+	let rgb = hsvToRgb(hsv[0], hsv[1], hsv[2]);
+	if (rgb[0] === 0 && rgb[1] === 0 && rgb[2] === 0) return 0x010101;
+	else return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
+}
+
 let colour_scheme = new ColorSchemeType();
 
 var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
@@ -81,6 +180,7 @@ let load_button = document.getElementById('load-button');
 let generate_button = document.getElementById('generate-button');
 let copy_button = document.getElementById('copy-button');
 let error_message = document.getElementById('error-message');
+let shade_button = document.getElementById('shade-button');
 
 copy_button.addEventListener('click', () => { navigator.clipboard.writeText(editor.getValue()); });
 
@@ -109,6 +209,47 @@ load_button.addEventListener('click', () =>
 		{
 			let input = td.firstChild;
 			input.value = '#' + colour.toString(16).padStart(6, '0').toUpperCase();
+		}
+	}
+});
+
+
+shade_button.addEventListener('click', () =>
+{
+	let trs = document.getElementsByTagName('tr');
+	let base_tr = null;
+	for (let tr of trs) if (tr.className === 'Base-tr') base_tr = tr;
+	for (let tr of trs) if (tr !== base_tr)
+	{
+		let tds = tr.getElementsByTagName('td');
+		for (let td of tds)
+		{
+			if (td.firstChild && td.firstChild.tagName === 'INPUT')
+			{
+				let base_name = td.className.split(/(?=[A-Z])/)[0];
+				let base_td = base_tr.getElementsByClassName(`${base_name}_Swap`)[0];
+				let base_colour = base_td.firstChild.value;
+				let shade = 0;
+				const shades =
+				{
+					'VD': -2,
+					'Dk': -1,
+					'Lt': 1,
+					'VL': 2,
+					'Acc': 3
+				};
+				for (let key in shades)
+				{
+					if (td.className.includes(key))
+					{
+						shade = shades[key];
+						break;
+					}
+				}
+				let colour = shadeColour(parseInt(base_colour.slice(1), 16), shade);
+				td.firstChild.value = '#' + colour.toString(16).padStart(6, '0').toUpperCase();
+				colour_scheme[td.className] = colour;
+			}
 		}
 	}
 });
