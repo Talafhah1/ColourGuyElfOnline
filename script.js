@@ -264,3 +264,25 @@ for (let input of inputs) input.addEventListener('change', () =>
 
 editor.setValue(colour_scheme.generateXML());
 load_button.click();
+
+let colour_schemes = [];
+let xml = new XMLHttpRequest();
+xml.open('GET', 'ColourSchemeTypes.xml', true);
+xml.onreadystatechange = () =>
+{
+	if (xml.readyState === 4 && xml.status === 200)
+	{
+		let parser = new DOMParser();
+		let xmlDoc = parser.parseFromString(xml.responseText, 'text/xml');
+		let xmlNodes = xmlDoc.getElementsByTagName('ColorSchemeType');
+		for (let xmlNode of xmlNodes)
+		{
+			let colour_scheme = new ColorSchemeType();
+			colour_scheme.loadXML(xmlNode.outerHTML);
+			colour_schemes.push(colour_scheme);
+		}
+	}
+};
+xml.send();
+
+console.log(colour_schemes)

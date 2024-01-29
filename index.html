@@ -6,11 +6,11 @@
 	<title>ColourGuyElf Online</title>
 	<link rel="stylesheet" href="styles.css">
 	<link rel="icon" href="favicon.png" type="image/x-icon">
-</head>
-<body>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/mode/xml/xml.min.js"></script>
+</head>
+<body>
 	<div class="main">
 		<div class="colour-grid">
 			<table>
@@ -81,7 +81,8 @@
 		<div class="xml-area">
 			<div class="button-carrousel">
 				<p id="error-message" class="error-message"></p>
-				<button id="load-button" title="Load XML into colour grid">Load</button>
+				<select title="Load a built-in game colour"></select>
+				<button id="load-button" class="load-button" title="Load XML into colour grid">Load</button>
 				<button id="generate-button" title="Generate XML based on current colour grid">Generate</button>
 				<button id="copy-button" title="Copy XML to clipboard">Copy</button>
 			</div>

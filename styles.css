@@ -16,7 +16,6 @@ body
 	align-items: center;
 }
 
-
 input[type="color"]#color-input
 {
 	border: none;
@@ -68,6 +67,7 @@ input[type="color"]#color-input
 .button-carrousel
 {
 	height: 30px;
+	width: 35vw;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -78,9 +78,9 @@ input[type="color"]#color-input
 {
 	font-family: 'Consolas', Courier, monospace;
 	color: red;
-	font-size: 16px;
+	font-size: 12px;
 	height: 30px;
-	width: calc(35vw - 235px);
+	width: calc(35vw - 270px);
 	min-width: 285px;
 	display: flex;
 	align-items: center;
@@ -95,6 +95,11 @@ button
 	margin-left: 5px;
 	width: 70px;
 	cursor: pointer;
+}
+
+.load-button
+{
+	margin-left: 0px;
 }
 
 .CodeMirror
@@ -129,4 +134,17 @@ button
 	width: 15vh;
 	min-width: 30px;
 	max-width: 10vw;
+}
+
+select
+{
+	font-family: 'Consolas', Courier, monospace;
+	font-size: 12px;
+	border: none;
+	height: 35px;
+	width: 10px;
+	padding: 10px;
+	margin-left: 5px;
+	text-align: left;
+	cursor: pointer;
 }
