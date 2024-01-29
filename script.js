@@ -114,7 +114,11 @@ load_button.addEventListener('click', () =>
 });
 
 let inputs = document.getElementsByTagName('input');
-for (let input of inputs) input.addEventListener('change', () => { colour_scheme[input.parentNode.className] = parseInt(input.value.slice(1), 16); });
+for (let input of inputs) input.addEventListener('change', () =>
+{
+	let colorValue = parseInt(input.value.slice(1), 16);
+	colour_scheme[input.parentNode.className] = colorValue !== 0 ? colorValue : fallbackValue;
+});
 
 editor.setValue(colour_scheme.generateXML());
 load_button.click();
