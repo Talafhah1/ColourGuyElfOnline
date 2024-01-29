@@ -151,7 +151,10 @@ function shadeColour(colour, shade)
 	{
 		hsv[0] = (hsv[0] + Math.floor(Math.random() * 60) - 30) % 360;
 		hsv[1] = 255;
+<<<<<<< HEAD
 		hsv[2] = Math.max(hsv[2], 128);
+=======
+>>>>>>> 428d29d4c70d5e839a87de76a5b81f9b1e45577e
 	}
 	else
 	{
