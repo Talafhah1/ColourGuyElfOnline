@@ -117,7 +117,7 @@ let inputs = document.getElementsByTagName('input');
 for (let input of inputs) input.addEventListener('change', () =>
 {
 	let colorValue = parseInt(input.value.slice(1), 16);
-	colour_scheme[input.parentNode.className] = colorValue !== 0 ? colorValue : fallbackValue;
+	colour_scheme[input.parentNode.className] = colorValue !== 0 ? colorValue : 0x010101;
 });
 
 editor.setValue(colour_scheme.generateXML());
