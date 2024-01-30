@@ -276,6 +276,18 @@ function shadeColour(colour, shade)
 	else return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
 }
 
+function colouriseText()
+{
+	let pres = document.getElementsByClassName("CodeMirror-line");
+	let spans = [];
+	for (let pre of pres) spans.push(pre.getElementsByTagName("span")[0]);
+	for (let span of spans) for (let node of span.childNodes) if (node.nodeType === 3)
+	{
+		let colour = parseInt(node.nodeValue.slice(2), 16);
+		if (colour) node.parentNode.style.color = '#' + colour.toString(16).padStart(6, '0').toUpperCase();
+	}
+}
+
 let colour_scheme = new ColorSchemeType();
 
 var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
@@ -299,6 +311,7 @@ generate_button.addEventListener("click", () =>
 {
 	editor.setValue(colour_scheme.generateXML());
 	error_message.innerHTML = '';
+	colouriseText();
 });
 
 load_button.addEventListener("click", () =>
@@ -325,6 +338,8 @@ load_button.addEventListener("click", () =>
 			input.value = '#' + colour.toString(16).padStart(6, '0').toUpperCase();
 		}
 	}
+
+	colouriseText();
 });
 
 shade_button.addEventListener("click", () =>
@@ -468,8 +483,14 @@ select.addEventListener("change", () =>
 	selector_change = true;
 	editor.setValue(colour_scheme.generateXML());
 	selector_change = false;
+	colouriseText();
 });
 
-editor.on("change", () => { if (!selector_change) select.selectedIndex = 0; });	
+editor.on("change", () =>
+{
+	if (!selector_change) select.selectedIndex = 0;
+	colouriseText();
+});	
 
+colouriseText();
 select.selectedIndex = 0;
