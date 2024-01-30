@@ -1,44 +1,189 @@
-body
-{
-	font-family: 'Consolas', Courier, monospace;
-}
-
 .main
 {
-	border: 5px;
+	box-sizing: border-box;
+	width: 99%;
+	height: 99%;
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	padding: 10px;
+	border: 2rem;
+	grid-template-columns: repeat(2, 1fr);
 	display: flex;
 	justify-content: center;
 	align-items: center;
+}
+
+@media only screen and (max-width: 60rem)
+{
+	.main
+	{
+		flex-direction: column;
+		grid-template-columns: none;
+		position: default;
+		top: 50vw;
+		left: 0%;
+		transform: none;
+	}
+
+	table
+	{
+		width: 100%;
+		height: 100%;
+	}
+
+	.colours
+	{
+		min-height: 100vw;
+		max-height: 100vw;
+		height: 100vw;
+		width: 95vw;
+		min-width: 95vw;
+		max-width: 95vw;
+		padding-right: 0;
+		padding-left: 0;
+	}
+
+	td input[type="color"]#color-input
+	{
+		max-width: 14vw;
+		min-width: 14vw;
+		width: 14vw;
+		max-height: 14vw;
+		min-height: 14vw;
+		height: 14vw;
+	}
+
+	.shade-td
+	{
+		max-height: 14vw;
+		min-height: 14vw;
+		height: 14vw;
+		align-items: center;
+	}
+
+	.shade-button 
+	{
+		max-width: 14vw;
+		min-width: 14vw;
+		width: 14vw;
+		max-height: 14vw;
+		min-height: 14vw;
+		height: 14vw;
+	}
+
+	.xml-area
+	{
+		min-width: 95vw;
+		padding-right: 0;
+		padding-left: 0;
+		flex-grow: 0;
+	}
+
+	.CodeMirror-code
+	{
+		font-size: .75rem;
+	}
+
+	.table-label
+	{
+		font-size: .75rem;
+		max-width: 10vw;
+		text-align: left;
+	}
+
+	.table-header
+	{
+		text-align: center;
+	}
+}
+
+@media only screen and (min-width: 60rem)
+{
+	.colours
+	{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		width: 105vh;
+		max-width: 70%;
+		padding-right: .5rem;
+		padding-left: .5rem;
+	}
+
+	.table-label
+	{
+		font-size: 1rem;
+		border: none;
+		height: 2rem;
+		width: 6rem;
+		min-width: 2rem;
+		min-height: 2rem;
+		margin-right: 1vh;
+	}
+
+	.table-header
+	{
+		max-width: 10vw;
+		width: 15vh;
+	}
+
+	.shade-td
+	{
+		height: 15vh;
+		min-height: 2rem;
+		max-height: 10vw;
+		align-items: end;
+	}
+
+	.shade-button
+	{
+		height: 5vh;
+		min-height: 2rem;
+		max-height: 10vw; 
+		width: 15vh;
+		min-width: 2rem;
+		max-width: 10vw;
+	}
+}
+
+.xml-area
+{
+	width: 29%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	box-sizing: border-box;
+	padding-right: .5rem;
+	padding-left: .5rem;
 }
 
 input[type="color"]#color-input
 {
 	border: none;
 	height: 15vh;
-	min-height: 30px;
+	min-height: 2rem;
 	max-height: 10vw; 
 	width: 15vh;
-	min-width: 30px;
+	min-width: 2rem;
 	max-width: 10vw;
 	cursor: pointer;
-	margin: 0px;
+	margin: 0;
+}
+
+td
+{
+	width: 15vh;
+	min-width: 2rem;
+	max-width: 10vw;
 }
 
 .table-label
 {
 	font-family: 'Consolas', Courier, monospace;
-	font-size: 16px;
 	border: none;
-	height: 30px;
-	width: 100px;
-	margin: 0px;
-	margin-right: 1vh;
-	text-align: right;
+	margin: 0;
 	cursor: default;
 }
 
@@ -46,105 +191,67 @@ input[type="color"]#color-input
 {
 	text-align: center;
 	margin-right: 0;
-	max-width: 10vw;
-	width: 15vh;
-}
-
-.xml-area
-{
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: flex-end;
-	height: calc(100vh - 30px);
-	box-sizing: border-box;
-	margin: 0px;
-	padding-left: 10px;
-	width: 35vw;
-	min-width: 500px;
 }
 
 .button-carrousel
 {
-	height: 30px;
-	width: 35vw;
+	height: 2rem;
+	width: 100%;
 	display: flex;
-	justify-content: center;
+	justify-content: flex-end;
 	align-items: center;
-	margin: 0px;
 }
 
 .error-message
 {
 	font-family: 'Consolas', Courier, monospace;
 	color: red;
-	font-size: 12px;
-	height: 30px;
-	width: calc(35vw - 270px);
-	min-width: 285px;
+	font-size: 1rem;
+	height: 2rem;
+	overflow: hidden;
+	width: 100%;
 	display: flex;
 	align-items: center;
+	margin: 0;
 }
 
 button
 {
 	font-family: 'Consolas', Courier, monospace;
-	font-size: 12px;
+	font-size: .75rem;
 	border: none;
-	padding: 10px;
-	margin-left: 5px;
-	width: 70px;
+	padding: .5rem;
+	margin-left: .25rem;
+	width: 4rem;
 	cursor: pointer;
-}
-
-.load-button
-{
-	margin-left: 0px;
+	height: 2rem;
 }
 
 .CodeMirror
 {
-	font-size: 16px;
-	width: 35vw;
-	min-width: 500px;
-	min-height: 92vh;
-	margin-bottom: 10px;
-	margin-top: 10px;
-	resize: none;
+	width: 100%;
+	font-size: 1rem;
+	margin-bottom: .5rem;
+	margin-top: .5rem;
+	min-height: calc(100vh - 6rem);
 }
 
 .shade-td
 {
-	height: 15vh;
-	min-height: 30px;
-	max-height: 10vw; 
-	width: 15vh;
-	min-width: 30px;
-	max-width: 10vw;
 	display: flex;
 	justify-content: center;
-	align-items: end;
-}
-
-.shade-button
-{
-	height: 5vh;
-	min-height: 30px;
-	max-height: 10vw; 
-	width: 15vh;
-	min-width: 30px;
-	max-width: 10vw;
 }
 
 select
 {
 	font-family: 'Consolas', Courier, monospace;
-	font-size: 12px;
+	font-size: .75rem;
 	border: none;
-	height: 35px;
-	width: 10px;
-	padding: 10px;
-	margin-left: 5px;
+	height: 2rem;
+	width: 15rem;
+	min-width: 4rem;
+	padding: .5rem;
+	margin-left: .25rem;
 	text-align: left;
 	cursor: pointer;
-}
+} 

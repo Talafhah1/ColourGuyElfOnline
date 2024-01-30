@@ -291,6 +291,8 @@ let copy_button = document.getElementById("copy-button");
 let error_message = document.getElementById("error-message");
 let shade_button = document.getElementById("shade-button");
 
+let selector_change = false;
+
 copy_button.addEventListener("click", () => { navigator.clipboard.writeText(editor.getValue()); });
 
 generate_button.addEventListener("click", () =>
@@ -308,7 +310,10 @@ load_button.addEventListener("click", () =>
 		return;
 	}
 	error_message.innerHTML = '';
+	
+	selector_change = true;
 	editor.setValue(colour_scheme.generateXML());
+	selector_change = false;
 
 	let tds = document.getElementsByTagName("td");
 	for (let td of tds)
@@ -372,7 +377,7 @@ for (let input of inputs) input.addEventListener("change", () =>
 editor.setValue(colour_scheme.generateXML());
 load_button.click();
 
-var colour_schemes = [];
+let colour_schemes = [];
 async function loadColourSchemes()
 {
 	let urls =
@@ -460,7 +465,11 @@ select.addEventListener("change", () =>
 	let colour_scheme = new GameColorSchemeType();
 	let colour_scheme_name = select.value;
 	for (let scheme of colour_schemes) if (scheme.DisplayNameKey === colour_scheme_name) colour_scheme = scheme;
+	selector_change = true;
 	editor.setValue(colour_scheme.generateXML());
-	select.selectedIndex = 0;
+	selector_change = false;
 });
+
+editor.on("change", () => { if (!selector_change) select.selectedIndex = 0; });	
+
 select.selectedIndex = 0;
