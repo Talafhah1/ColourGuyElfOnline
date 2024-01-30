@@ -1,3 +1,5 @@
+const BLACK_FALLBACK = 0x010101;
+
 class ColorSchemeType
 {
 	HairLt_Swap = 0xFF8080;
@@ -70,8 +72,38 @@ class ColorSchemeType
 
 class GameColorSchemeType extends ColorSchemeType
 {
-	DisplayNameKey;
-	OrderID;
+	HairLt_Swap = 0x000000;
+	Hair_Swap = 0x000000;
+	HairDk_Swap = 0x000000;
+	Body1VL_Swap = 0x000000;
+	Body1Lt_Swap = 0x000000;
+	Body1_Swap = 0x000000;
+	Body1Dk_Swap = 0x000000;
+	Body1VD_Swap = 0x000000;
+	Body1Acc_Swap = 0x000000;
+	Body2VL_Swap = 0x000000;
+	Body2Lt_Swap = 0x000000;
+	Body2_Swap = 0x000000;
+	Body2Dk_Swap = 0x000000;
+	Body2VD_Swap = 0x000000;
+	Body2Acc_Swap = 0x000000;
+	SpecialVL_Swap = 0x000000;
+	SpecialLt_Swap = 0x000000;
+	Special_Swap = 0x000000;
+	SpecialDk_Swap = 0x000000;
+	SpecialVD_Swap = 0x000000;
+	SpecialAcc_Swap = 0x000000;
+	ClothVL_Swap = 0x000000;
+	ClothLt_Swap = 0x000000;
+	Cloth_Swap = 0x000000;
+	ClothDk_Swap = 0x000000;
+	WeaponVL_Swap = 0x000000;
+	WeaponLt_Swap = 0x000000;
+	Weapon_Swap = 0x000000;
+	WeaponDk_Swap = 0x000000;
+	WeaponAcc_Swap = 0x000000;
+	DisplayNameKey = "ColorSchemeType_NO_COLOR_SCHEME_DisplayName";
+	OrderID = 0;
 	TeamColor = 0;
 
 	generateXML()
@@ -240,7 +272,7 @@ function shadeColour(colour, shade)
 	hsv[1] = Math.min(hsv[1], 255);
 	hsv[2] = Math.min(hsv[2], 255);
 	let rgb = hsvToRgb(hsv[0], hsv[1], hsv[2]);
-	if (rgb[0] === 0 && rgb[1] === 0 && rgb[2] === 0) return 0x010101;
+	if (rgb[0] === 0 && rgb[1] === 0 && rgb[2] === 0) return BLACK_FALLBACK;
 	else return (rgb[0] << 16) + (rgb[1] << 8) + rgb[2];
 }
 
@@ -334,7 +366,7 @@ let inputs = document.getElementsByTagName("input");
 for (let input of inputs) input.addEventListener("change", () =>
 {
 	let colorValue = parseInt(input.value.slice(1), 16);
-	colour_scheme[input.parentNode.className] = colorValue !== 0 ? colorValue : 0x010101;
+	colour_scheme[input.parentNode.className] = colorValue !== 0 ? colorValue : BLACK_FALLBACK;
 });
 
 editor.setValue(colour_scheme.generateXML());
@@ -377,6 +409,9 @@ async function loadColourSchemes()
 		}
 		else return a.TeamColor - b.TeamColor;
 	});
+
+	// let default_scheme = new GameColorSchemeType();
+	// colour_schemes.unshift(default_scheme);
 
 	let lines = tsv_text.split("\n");
 	let string_table = {};
@@ -428,3 +463,4 @@ select.addEventListener("change", () =>
 	editor.setValue(colour_scheme.generateXML());
 	select.selectedIndex = 0;
 });
+select.selectedIndex = 0;
