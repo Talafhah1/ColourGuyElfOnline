@@ -393,17 +393,7 @@ share_button.addEventListener("click", () =>
 {
 	generate_button.click();
 	let base64 = '';
-	for (let prop in colour_scheme) if (typeof this[prop] != "function" && prop !== "header-td")
-	{
-		base64 += colour_scheme[prop].toString(16).padStart(6, '0').toUpperCase();
-	}
-	// let chunks = [];
-	// for (let i = 0; i < base64.length; i += 13)
-	// {
-	// 	let chunk = base64.slice(i, i + 13);
-	// 	chunks.push(btoa(chunk));
-	// }
-	// let base64_url = chunks.join('');
+	for (let prop in colour_scheme) if (typeof this[prop] != "function" && prop !== "header-td") base64 += colour_scheme[prop].toString(16).padStart(6, '0').toUpperCase();
 	let base64_url = btoa(base64);
 	let url = window.location.href.split('?')[0];
 	url += `?colour=${base64_url}`;
@@ -590,6 +580,31 @@ dud_option_team.innerHTML = "Team Colour Schemes";
 dud_option_team.disabled = true;
 dud_option_team.style.color = "grey";
 
+function loadSave()
+{
+	let dud_option_saved = document.createElement("option");
+	dud_option_saved.value = '';
+	dud_option_saved.innerHTML = "Saved Colour Schemes";
+	dud_option_saved.disabled = true;
+	dud_option_saved.style.color = "grey";
+	saved_select.prepend(dud_option_saved);
+
+	let saved_options = [];
+	for (let i = 0; i < localStorage.length; i++)
+	{
+		let key = localStorage.key(i);
+		if (key.startsWith("colour_scheme_"))
+		{
+			let option = document.createElement("option");
+			option.value = localStorage.getItem(key);
+			option.innerHTML = key.slice(14);
+			saved_options.push(option);
+		}
+	}
+	saved_options.sort((a, b) => a.innerHTML.localeCompare(b.innerHTML));
+	for (let option of saved_options) saved_select.appendChild(option);
+}
+
 loadColourSchemes().then(colour_schemes =>
 {
 	let seen_team = false;
@@ -605,6 +620,9 @@ loadColourSchemes().then(colour_schemes =>
 
 game_select.addEventListener("change", () =>
 {
+	saved_select.selectedIndex = 0;
+	delete_button.style.cursor = "not-allowed";
+	delete_button.addEventListener("click", () => {});
 	let colour_scheme = new GameColorSchemeType();
 	let colour_scheme_name = game_select.value;
 	for (let scheme of colour_schemes) if (scheme.DisplayNameKey === colour_scheme_name) colour_scheme = scheme;
@@ -614,11 +632,85 @@ game_select.addEventListener("change", () =>
 	colouriseText();
 });
 
+saved_select.addEventListener("change", () =>
+{
+	game_select.selectedIndex = 0;
+	delete_button.style.cursor = "pointer";
+	delete_button.addEventListener("click", deleteSave);
+	let colour_scheme = new ColorSchemeType();
+	colour_scheme.loadXML(saved_select.value);
+	
+	selector_change = true;
+	editor.setValue(colour_scheme.generateXML());
+	selector_change = false;
+	colouriseText();
+});
+
+save_button.addEventListener("click", () =>
+{
+	while (true)
+	{
+		let colour_scheme_name = prompt("Please enter a name for the colour scheme");
+		if (colour_scheme_name == null) return;
+		if (colour_scheme_name === "") alert("Please enter a name");
+		else
+		{
+			let unique = true;
+			for (let i = 0; i < localStorage.length; i++)
+			{
+				let key = localStorage.key(i);
+				if (key === `colour_scheme_${colour_scheme_name}`)
+				{
+					unique = false;
+					break;
+				}
+			}
+			if (unique)
+			{
+				generate_button.click();
+				localStorage.setItem(`colour_scheme_${colour_scheme_name}`, colour_scheme.generateXML());
+				while (saved_select.firstChild) saved_select.removeChild(saved_select.firstChild);
+				loadSave();
+				for (let i = 0; i < saved_select.length; i++)
+				{
+					let option = saved_select[i];
+					if (option.innerHTML === colour_scheme_name)
+					{
+						saved_select.selectedIndex = i;
+						break;
+					}
+				}
+				break;
+			}
+			else alert("That name is already in use");
+		}
+	}
+});
+
+function deleteSave()
+{
+	let colour_scheme_name = saved_select[saved_select.selectedIndex].innerHTML;
+	localStorage.removeItem(`colour_scheme_${colour_scheme_name}`);
+	while (saved_select.firstChild) saved_select.removeChild(saved_select.firstChild);
+	loadSave();
+	saved_select.selectedIndex = 0;
+}
+
 editor.on("change", () =>
 {
-	if (!selector_change) game_select.selectedIndex = 0;
+	if (!selector_change)
+	{
+		game_select.selectedIndex = 0;
+		saved_select.selectedIndex = 0;
+		delete_button.style.cursor = "not-allowed";
+		delete_button.addEventListener("click", () => {});
+	}
 	colouriseText();
 });	
 
 game_select.selectedIndex = 0;
+loadSave();
+saved_select.selectedIndex = 0;
+delete_button.style.cursor = "not-allowed";
+delete_button.addEventListener("click", () => {});
 colouriseText();
