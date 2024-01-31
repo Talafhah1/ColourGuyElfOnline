@@ -254,6 +254,7 @@ function hsvToRgb(h, s, v)
 
 function shadeColour(colour, shade)
 {
+	if (shade === 0) return colour;
 	let hsv = rgbToHsv(colour >> 16, (colour >> 8) & 0xFF, colour & 0xFF);
 	if (shade === 3)
 	{
@@ -284,7 +285,13 @@ function colouriseText()
 	for (let span of spans) for (let node of span.childNodes) if (node.nodeType === 3)
 	{
 		let colour = parseInt(node.nodeValue.slice(2), 16);
-		if (colour) node.parentNode.style.color = '#' + colour.toString(16).padStart(6, '0').toUpperCase();
+		let span = document.createElement("span");
+		span.appendChild(document.createTextNode(node.nodeValue));
+		node.parentNode.replaceChild(span, node);
+		span.style.backgroundColor = '#' + colour.toString(16).padStart(6, '0').toUpperCase();
+		let hsv = rgbToHsv(colour >> 16, (colour >> 8) & 0xFF, colour & 0xFF);
+		if (hsv[2] < 128) span.style.color = "white";
+		else span.style.color = "black";
 	}
 }
 
@@ -302,6 +309,7 @@ let generate_button = document.getElementById("generate-button");
 let copy_button = document.getElementById("copy-button");
 let error_message = document.getElementById("error-message");
 let shade_button = document.getElementById("shade-button");
+let randomise_button = document.getElementById("randomise-button");
 
 let selector_change = false;
 
@@ -380,6 +388,26 @@ shade_button.addEventListener("click", () =>
 			}
 		}
 	}
+});
+
+randomise_button.addEventListener("click", () =>
+{
+	let tr = document.getElementsByClassName("Base-tr")[0];
+	let tds = tr.getElementsByTagName("td");
+
+		for (let td of tds)
+		{
+			if (td.firstChild && td.firstChild.tagName === "INPUT")
+			{
+				let hue = Math.floor(Math.random() * 360);
+				let saturation = Math.floor(Math.random() * 192) + 64;
+				let value = Math.floor(Math.random() * 192) + 64;
+				let colour = hsvToRgb(hue, saturation, value);
+				td.firstChild.value = '#' + (colour[0] << 16 | colour[1] << 8 | colour[2]).toString(16).padStart(6, '0').toUpperCase();
+				colour_scheme[td.className] = colour[0] << 16 | colour[1] << 8 | colour[2];
+			}
+		}
+	shade_button.click();
 });
 
 let inputs = document.getElementsByTagName("input");
@@ -492,5 +520,5 @@ editor.on("change", () =>
 	colouriseText();
 });	
 
-colouriseText();
 select.selectedIndex = 0;
+colouriseText();

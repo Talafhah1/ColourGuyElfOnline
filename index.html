@@ -19,15 +19,15 @@
 		<div class="colours">
 			<table>
 				<tr>
-					<td></td>
-					<td><p class="table-label table-header" title="Mostly used for hair and some cloth- and leather-like materials">Hair</p></td>
-					<td><p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Primary&quot;">Body 1</p></td>
-					<td><p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Secondary&quot;">Body 2</p></td>
-					<td><p class="table-label table-header" title="Typically used for highlights, accent objects, and some hairs; sometimes referred to as &quot;Tertiary&quot;">Special</p></td>
-					<td><p class="table-label table-header" title="Mostly used for cloth- and leather-like materials, especially trousers and undergarments">Cloth</p></td>
-					<td><p class="table-label table-header" title="Mostly used for metallic materials; often referred to as &quot;Metal&quot;">Weapon</p></td>
+					<td class="label-td"></td>
+					<td class="label-td"><p class="table-label table-header" title="Mostly used for hair and some cloth- and leather-like materials">Hair</p></td>
+					<td class="label-td"><p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Primary&quot;">Body 1</p></td>
+					<td class="label-td"><p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Secondary&quot;">Body 2</p></td>
+					<td class="label-td"><p class="table-label table-header" title="Typically used for highlights, accent objects, and some hairs; sometimes referred to as &quot;Tertiary&quot;">Special</p></td>
+					<td class="label-td"><p class="table-label table-header" title="Mostly used for cloth- and leather-like materials, especially trousers and undergarments">Cloth</p></td>
+					<td class="label-td"><p class="table-label table-header" title="Mostly used for metallic materials; often referred to as &quot;Metal&quot;">Weapon</p></td>
 				<tr class="VL-tr">
-					<td><p class="table-label" title="Recommended values: Hue Offset ±6°, Saturation &lt; 25%, Brightness &gt; 80%">Very Light</p></td>
+					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±6°, Saturation &lt; 25%, Brightness &gt; 80%">Very Light</p></td>
 					<td></td>
 					<td class="Body1VL_Swap"><input type="color" id="color-input"></td>
 					<td class="Body2VL_Swap"><input type="color" id="color-input"></td>
@@ -36,7 +36,7 @@
 					<td class="WeaponVL_Swap"><input type="color" id="color-input"></td>
 				</tr>
 				<tr class="Lt-tr">
-					<td><p class="table-label" title="Recommended values: 15% &lt; Hue Offset ±3°, Saturation &lt; 67%, Brightness &gt; 50%">Light</p></td>
+					<td class="label-td"><p class="table-label" title="Recommended values: 15% &lt; Hue Offset ±3°, Saturation &lt; 67%, Brightness &gt; 50%">Light</p></td>
 					<td class="HairLt_Swap"><input type="color" id="color-input"></td>
 					<td class="Body1Lt_Swap"><input type="color" id="color-input"></td>
 					<td class="Body2Lt_Swap"><input type="color" id="color-input"></td>
@@ -45,7 +45,7 @@
 					<td class="WeaponLt_Swap"><input type="color" id="color-input"></td>
 				</tr>
 				<tr class="Base-tr">
-					<td><p class="table-label" title="Recommended values: Saturation &gt; 25%, Brightness &gt; 20%">Base</p></td>
+					<td class="label-td"><p class="table-label" title="Recommended values: Saturation &gt; 25%, Brightness &gt; 20%">Base</p></td>
 					<td class="Hair_Swap"><input type="color" id="color-input"></td>
 					<td class="Body1_Swap"><input type="color" id="color-input"></td>
 					<td class="Body2_Swap"><input type="color" id="color-input"></td>
@@ -54,7 +54,7 @@
 					<td class="Weapon_Swap"><input type="color" id="color-input"></td>
 				</tr>
 				<tr class="Dk-tr">
-					<td><p class="table-label" title="Recommended values: Hue Offset ±3°, Saturation &gt; 30%, Brightness &lt; 60%">Dark</p></td>
+					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±3°, Saturation &gt; 30%, Brightness &lt; 60%">Dark</p></td>
 					<td class="HairDk_Swap"><input type="color" id="color-input"></td>
 					<td class="Body1Dk_Swap"><input type="color" id="color-input"></td>
 					<td class="Body2Dk_Swap"><input type="color" id="color-input"></td>
@@ -63,7 +63,7 @@
 					<td class="WeaponDk_Swap"><input type="color" id="color-input"></td>
 				</tr>
 				<tr class="VD-tr">
-					<td><p class="table-label" title="Recommended values: Hue Offset ±6°, Saturation &gt; 50%, Brightness &lt; 40%">Very Dark</p></td>
+					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±6°, Saturation &gt; 50%, Brightness &lt; 40%">Very Dark</p></td>
 					<td></td>
 					<td class="Body1VD_Swap"><input type="color" id="color-input"></td>
 					<td class="Body2VD_Swap"><input type="color" id="color-input"></td>
@@ -72,8 +72,8 @@
 					<td></td>
 				</tr>
 				<tr class="Acc-tr">
-					<td><p class="table-label" title="Recommended values: Hue Offset ±&lt;30°, Saturation &gt; 80%, Brightness &gt; 50%">Accent</p></td>
-					<td class="shade-td"><button id="shade-button" class="shade-button" title="Automatically calculate all shades based on the Base shade">Auto Shade</button></td>
+					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±&lt;30°, Saturation &gt; 80%, Brightness &gt; 50%">Accent</p></td>
+					<td></td>
 					<td class="Body1Acc_Swap"><input type="color" id="color-input"></td>
 					<td class="Body2Acc_Swap"><input type="color" id="color-input"></td>
 					<td class="SpecialAcc_Swap"><input type="color" id="color-input"></td>
@@ -88,6 +88,10 @@
 				<button id="load-button" class="load-button" title="Load XML into colour grid">Load</button>
 				<button id="generate-button" title="Generate XML based on current colour grid">Generate</button>
 				<button id="copy-button" title="Copy XML to clipboard">Copy</button>
+			</div>
+			<div class="button-carrousel">
+				<button id="randomise-button" title="Randomise all colours">Randomise</button>
+				<button id="shade-button" title="Automatically calculate all shades based on the Base shade">Auto Shade</button>
 			</div>
 			<textarea spellcheck="false" id="xml-input" class="xml-editor"></textarea>
 			<p id="error-message" class="error-message"></p>
