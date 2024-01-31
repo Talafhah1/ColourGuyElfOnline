@@ -20,12 +20,42 @@
 			<table>
 				<tr>
 					<td class="label-td"></td>
-					<td class="label-td"><p class="table-label table-header" title="Mostly used for hair and some cloth- and leather-like materials">Hair</p></td>
-					<td class="label-td"><p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Primary&quot;">Body 1</p></td>
-					<td class="label-td"><p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Secondary&quot;">Body 2</p></td>
-					<td class="label-td"><p class="table-label table-header" title="Typically used for highlights, accent objects, and some hairs; sometimes referred to as &quot;Tertiary&quot;">Special</p></td>
-					<td class="label-td"><p class="table-label table-header" title="Mostly used for cloth- and leather-like materials, especially trousers and undergarments">Cloth</p></td>
-					<td class="label-td"><p class="table-label table-header" title="Mostly used for metallic materials; often referred to as &quot;Metal&quot;">Weapon</p></td>
+					<td class="label-td">
+						<div class="header-td">
+							<p class="table-label table-header" title="Mostly used for hair and some cloth- and leather-like materials">Hair</p>
+							<input type="checkbox" id="hair-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
+						</div>
+					</td>
+					<td class="label-td">
+						<div class="header-td">
+							<p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Primary&quot;">Body 1</p>
+							<input type="checkbox" id="body1-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
+						</div>
+					</td>
+					<td class="label-td">
+						<div class="header-td">
+							<p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Secondary&quot;">Body 2</p>
+							<input type="checkbox" id="body2-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
+						</div>
+					</td>
+					<td class="label-td">
+						<div class="header-td">
+							<p class="table-label table-header" title="Typically used for highlights, accent objects, and some hairs; sometimes referred to as &quot;Tertiary&quot;">Special</p>
+							<input type="checkbox" id="special-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
+						</div>
+					</td>
+					<td class="label-td">
+						<div class="header-td">
+							<p class="table-label table-header" title="Mostly used for cloth- and leather-like materials, especially trousers and undergarments">Cloth</p>
+							<input type="checkbox" id="cloth-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
+						</div>
+					</td>
+					<td class="label-td">
+						<div class="header-td">
+							<p class="table-label table-header" title="Mostly used for metallic materials; often referred to as &quot;Metal&quot;">Weapon</p>
+							<input type="checkbox" id="weapon-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
+						</div>
+					</td>
 				<tr class="VL-tr">
 					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±6°, Saturation &lt; 25%, Brightness &gt; 80%">Very Light</p></td>
 					<td></td>
@@ -84,17 +114,23 @@
 		</div>
 		<div class="xml-area">
 			<div class="button-list">
-				<select id="select-dropdown" title="Load a built-in game Colour Scheme.  Make sure to click the load button after selecting a Colour Scheme"></select>
+				<select id="game-select-dropdown" title="Load a built-in game Colour Scheme.  Make sure to click the load button after selecting a Colour Scheme"></select>
 				<button id="load-button" class="load-button" title="Load XML into colour grid">Load</button>
-				<button id="generate-button" title="Generate XML based on current colour grid">Generate</button>
-				<button id="copy-button" title="Copy XML to clipboard">Copy</button>
-			</div>
-			<div class="button-list">
 				<button id="randomise-button" title="Randomise all colours">Randomise</button>
 				<button id="shade-button" title="Automatically calculate all shades based on the Base shade">Auto Shade</button>
 			</div>
+			<div class="button-list">
+				<select id="saved-select-dropdown" title="Load a saved custom Colour Scheme.  Make sure to click the load button after selecting a Colour Scheme"></select>
+				<button id="save-button" class="save-button" title="Generate XML and save Colour Scheme">Save</button>
+				<button id="delete-button" class="delete-button" title="Delete selected Colour Scheme">Delete</button>
+				<button id="generate-button" title="Generate XML based on current colour grid">Generate</button>
+			</div>
 			<textarea spellcheck="false" id="xml-input" class="xml-editor"></textarea>
-			<p id="error-message" class="error-message"></p>
+			<div class="button-list">
+				<p id="message" class="message"></p>
+				<button id="share-button" title="Generate XML and copy permalink to this Colour Scheme">Share</button>
+				<button id="copy-button" title="Copy XML to clipboard">Copy</button>
+			</div>
 		</div>
 	</div>
 	<script src="script.js"></script>

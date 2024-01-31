@@ -36,7 +36,7 @@ class ColorSchemeType
 	generateXML()
 	{
 		let xml = "<ColorSchemeType>\n";
-		for (let prop in this) if (typeof this[prop] != "function") xml += "\t<" + prop + ">0x" + this[prop].toString(16).padStart(6, '0').toUpperCase() + "</" + prop + ">\n";
+		for (let prop in this) if (typeof this[prop] != "function" && prop !== "header-td") xml += "\t<" + prop + ">0x" + this[prop].toString(16).padStart(6, '0').toUpperCase() + "</" + prop + ">\n";
 		xml += "</ColorSchemeType>";
 		return xml;
 	}
@@ -48,10 +48,11 @@ class ColorSchemeType
 			let parser = new DOMParser();
 			let xml_doc = parser.parseFromString(xml, "text/xml");
 			let xml_node = xml_doc.getElementsByTagName("ColorSchemeType")[0];
-			if (!xml_node) throw new Error("ColorSchemeType not found in XML");
+			if (!xml_node) throw new Error("ColorSchemeType not found in XML");			
+			let autolocks = document.getElementsByClassName("autolock");
 			for (let prop in this)
 			{
-				if (typeof this[prop] != "function")
+				if (typeof this[prop] != "function" && prop !== "header-td" && !autolocks.namedItem(`${prop.split(/(?=[A-Z])/)[0].toLowerCase().replace(/_/g, '')}-checkbox`).checked)
 				{
 					let value_node = xml_node.getElementsByTagName(prop)[0];
 					if (!value_node || !value_node.childNodes[0]) throw new Error(`Missing or invalid value for property ${prop}`);
@@ -295,6 +296,15 @@ function colouriseText()
 	}
 }
 
+function randomColour()
+{
+	let hue = Math.floor(Math.random() * 360);
+	let saturation = Math.floor(Math.random() * 192) + 64;
+	let value = Math.floor(Math.random() * 192) + 64;
+	let colour = hsvToRgb(hue, saturation, value);
+	return '#' + (colour[0] << 16 | colour[1] << 8 | colour[2]).toString(16).padStart(6, '0').toUpperCase();
+}
+
 let colour_scheme = new ColorSchemeType();
 
 var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
@@ -307,13 +317,21 @@ var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
 let load_button = document.getElementById("load-button");
 let generate_button = document.getElementById("generate-button");
 let copy_button = document.getElementById("copy-button");
-let error_message = document.getElementById("error-message");
+let error_message = document.getElementById("message");
 let shade_button = document.getElementById("shade-button");
 let randomise_button = document.getElementById("randomise-button");
+let share_button = document.getElementById("share-button");
+let save_button = document.getElementById("save-button");
+let delete_button = document.getElementById("delete-button");
 
 let selector_change = false;
 
-copy_button.addEventListener("click", () => { navigator.clipboard.writeText(editor.getValue()); });
+copy_button.addEventListener("click", () =>
+{
+	navigator.clipboard.writeText(editor.getValue());
+	error_message.innerHTML = "XML copied to clipboard";
+	error_message.style.color = "green";
+});
 
 generate_button.addEventListener("click", () =>
 {
@@ -328,25 +346,27 @@ load_button.addEventListener("click", () =>
 	catch (error)
 	{
 		error_message.innerHTML = `Error: ${error.message}`;
+		error_message.style.color = "red";
 		return;
 	}
 	error_message.innerHTML = '';
-	
+
 	selector_change = true;
 	editor.setValue(colour_scheme.generateXML());
 	selector_change = false;
 
-	let tds = document.getElementsByTagName("td");
+	let tds = document.querySelectorAll("td:not(.label-td)");
 	for (let td of tds)
 	{
 		let colour = colour_scheme[td.className];
-		if (colour)
+		let autolock = `${td.className.split(/(?=[A-Z])/)[0].toLowerCase().replace(/_/g, '')}-checkbox`;
+		if (colour && !document.getElementById(autolock).checked)
 		{
 			let input = td.firstChild;
 			input.value = '#' + colour.toString(16).padStart(6, '0').toUpperCase();
 		}
 	}
-
+	
 	colouriseText();
 });
 
@@ -360,7 +380,8 @@ shade_button.addEventListener("click", () =>
 		let tds = tr.getElementsByTagName("td");
 		for (let td of tds)
 		{
-			if (td.firstChild && td.firstChild.tagName === "INPUT")
+			let autolock = `${td.className.split(/(?=[A-Z])/)[0].toLowerCase().replace(/_/g, '')}-checkbox`;
+			if (td.firstChild && td.firstChild.tagName === "INPUT" && !document.getElementById(autolock).checked)
 			{
 				let base_name = td.className.split(/(?=[A-Z])/)[0];
 				let base_td = base_tr.getElementsByClassName(`${base_name}_Swap`)[0];
@@ -394,19 +415,16 @@ randomise_button.addEventListener("click", () =>
 {
 	let tr = document.getElementsByClassName("Base-tr")[0];
 	let tds = tr.getElementsByTagName("td");
-
-		for (let td of tds)
+	for (let td of tds)
+	{
+		let autolock = `${td.className.split(/(?=[A-Z])/)[0].toLowerCase().replace(/_/g, '')}-checkbox`;
+		if (td.firstChild && td.firstChild.tagName === "INPUT" && !document.getElementById(autolock).checked)
 		{
-			if (td.firstChild && td.firstChild.tagName === "INPUT")
-			{
-				let hue = Math.floor(Math.random() * 360);
-				let saturation = Math.floor(Math.random() * 192) + 64;
-				let value = Math.floor(Math.random() * 192) + 64;
-				let colour = hsvToRgb(hue, saturation, value);
-				td.firstChild.value = '#' + (colour[0] << 16 | colour[1] << 8 | colour[2]).toString(16).padStart(6, '0').toUpperCase();
-				colour_scheme[td.className] = colour[0] << 16 | colour[1] << 8 | colour[2];
-			}
+			let colour = randomColour();
+			td.firstChild.value = colour;
+			colour_scheme[td.className] = parseInt(colour.slice(1), 16);
 		}
+	}
 	shade_button.click();
 });
 
@@ -477,13 +495,14 @@ async function loadColourSchemes()
 	return colour_schemes;
 }
 
-let select = document.getElementById("select-dropdown");
+let game_select = document.getElementById("game-select-dropdown");
+let saved_select = document.getElementById("saved-select-dropdown");
 let dud_option_std = document.createElement("option");
 dud_option_std.value = '';
 dud_option_std.innerHTML = "Standard Colour Schemes";
 dud_option_std.disabled = true;
 dud_option_std.style.color = "grey";
-select.prepend(dud_option_std);
+game_select.prepend(dud_option_std);
 let dud_option_team = document.createElement("option");
 dud_option_team.value = '';
 dud_option_team.innerHTML = "Team Colour Schemes";
@@ -495,18 +514,18 @@ loadColourSchemes().then(colour_schemes =>
 	let seen_team = false;
 	for (let colour_scheme of colour_schemes)
 	{
-		if (colour_scheme.TeamColor !== 0 && !seen_team) { select.appendChild(dud_option_team); seen_team = true; }
+		if (colour_scheme.TeamColor !== 0 && !seen_team) { game_select.appendChild(dud_option_team); seen_team = true; }
 		let option = document.createElement("option");
 		option.value = colour_scheme.DisplayNameKey;
 		option.innerHTML = colour_scheme.DisplayNameKey;
-		select.appendChild(option);
+		game_select.appendChild(option);
 	}
 });
 
-select.addEventListener("change", () =>
+game_select.addEventListener("change", () =>
 {
 	let colour_scheme = new GameColorSchemeType();
-	let colour_scheme_name = select.value;
+	let colour_scheme_name = game_select.value;
 	for (let scheme of colour_schemes) if (scheme.DisplayNameKey === colour_scheme_name) colour_scheme = scheme;
 	selector_change = true;
 	editor.setValue(colour_scheme.generateXML());
@@ -516,9 +535,9 @@ select.addEventListener("change", () =>
 
 editor.on("change", () =>
 {
-	if (!selector_change) select.selectedIndex = 0;
+	if (!selector_change) game_select.selectedIndex = 0;
 	colouriseText();
 });	
 
-select.selectedIndex = 0;
+game_select.selectedIndex = 0;
 colouriseText();

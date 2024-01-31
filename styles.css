@@ -69,8 +69,6 @@
 		min-width: 95vw;
 		padding-right: 0;
 		padding-left: 0;
-		/* min-height: 70vh; */
-		/* overflow-y: auto;  */
 	}
 
 	.CodeMirror-code
@@ -82,12 +80,12 @@
 	{
 		font-size: .75rem;
 		max-width: 10vw;
-		text-align: left;
 	}
 
 	.table-header
 	{
-		text-align: center;
+		width: auto;
+		min-width: auto;
 	}
 	
 	.CodeMirror
@@ -127,15 +125,30 @@
 		margin-right: 1vh;
 	}
 
+	.header-td
+	{
+		width: 15vh;
+		max-width: 10vw;
+		height: 2rem;
+		min-height: 2rem;
+	}
+
 	.table-header
 	{
-		max-width: 10vw;
-		width: 15vh;
+		min-height: auto;
+		height: auto;
+		width: auto;
+		min-width: auto;
 	}
 
 	.CodeMirror
 	{
 		min-height: calc(100vh - 9rem);
+	}
+
+	input[type="checkbox"]
+	{
+		margin-left: 2ch;
 	}
 }
 
@@ -148,7 +161,7 @@
 	align-items: center;
 	box-sizing: border-box;
 	padding-right: .5rem;
-	padding-left: .5rem;
+	padding-left: .25rem;
 }
 
 input[type="color"]#color-input
@@ -177,12 +190,22 @@ td
 	border: none;
 	margin: 0;
 	cursor: default;
+	text-align: right;
 }
 
 .table-header
 {
+	max-width: 8ch;
+	display: inline-block;
 	text-align: center;
 	margin-right: 0;
+}
+
+.header-td
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .button-list
@@ -195,10 +218,10 @@ td
 	margin-bottom: .25rem;
 }
 
-.error-message
+.message
 {
+	cursor: default;
 	font-family: 'Consolas', Courier, monospace;
-	color: red;
 	font-size: 1rem;
 	height: 2rem;
 	overflow: hidden;
@@ -206,6 +229,9 @@ td
 	display: flex;
 	align-items: center;
 	margin: 0;
+	margin-left: .25rem;
+	max-width: calc(100% - 12.75rem);
+	flex-grow: 1;
 }
 
 button
@@ -226,6 +252,7 @@ button
 	width: 100%;
 	font-size: 1rem;
 	margin-bottom: .25rem;
+	margin-left: .25rem;
 }
 
 select
