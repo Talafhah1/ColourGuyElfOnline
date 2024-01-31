@@ -69,6 +69,33 @@ class ColorSchemeType
 			throw error;
 		}
 	}
+
+	loadHexString(hex)
+	{
+		try
+		{
+			if (hex.length !== 180) throw new Error("Invalid hex string length");
+			let idx = 0;
+			for (let prop in this)
+			{
+				if (typeof this[prop] != "function" && prop !== "header-td")
+				{
+					let start = idx * 6;
+					let end = start + 6;
+					let value = hex.slice(start, end);
+					let result = parseInt(value, 16);
+					if (isNaN(result)) throw new Error(`Invalid value for property ${prop}`);
+					else this[prop] = result;
+					idx++;
+				}
+			}
+		}
+		catch (error)
+		{
+			console.error(`Failed to load hex string: ${error.message}`);
+			throw error;
+		}
+	}
 }
 
 class GameColorSchemeType extends ColorSchemeType
@@ -304,8 +331,38 @@ function randomColour()
 	let colour = hsvToRgb(hue, saturation, value);
 	return '#' + (colour[0] << 16 | colour[1] << 8 | colour[2]).toString(16).padStart(6, '0').toUpperCase();
 }
+let message = document.getElementById("message");
 
 let colour_scheme = new ColorSchemeType();
+
+let params = new URLSearchParams(window.location.search);
+let base64_url = params.get("colour");
+if (base64_url)
+{
+
+	let hex;
+	let error = false;
+	try { hex = atob(base64_url); }
+	catch (error)
+	{
+		error = true;
+		console.error(`Failed to decode Colour Scheme from URL: ${error.message}`);
+		message.innerHTML = `Failed to decode Colour Scheme from URL: ${error.message}`;
+		message.style.color = "red";
+	}
+	
+	if (!error)
+	{
+		try { colour_scheme.loadHexString(hex); }
+		catch (error)
+		{
+			error = true;
+			console.error(`Failed to load Colour Scheme from URL: ${error.message}`);
+			message.innerHTML = `Failed to load Colour Scheme from URL: ${error.message}`;
+			message.style.color = "red";
+		}
+	}
+}
 
 var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
 {
@@ -317,7 +374,6 @@ var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
 let load_button = document.getElementById("load-button");
 let generate_button = document.getElementById("generate-button");
 let copy_button = document.getElementById("copy-button");
-let error_message = document.getElementById("message");
 let shade_button = document.getElementById("shade-button");
 let randomise_button = document.getElementById("randomise-button");
 let share_button = document.getElementById("share-button");
@@ -329,14 +385,39 @@ let selector_change = false;
 copy_button.addEventListener("click", () =>
 {
 	navigator.clipboard.writeText(editor.getValue());
-	error_message.innerHTML = "XML copied to clipboard";
-	error_message.style.color = "green";
+	message.innerHTML = "XML copied to clipboard";
+	message.style.color = "green";
+});
+
+share_button.addEventListener("click", () =>
+{
+	generate_button.click();
+	let base64 = '';
+	for (let prop in colour_scheme) if (typeof this[prop] != "function" && prop !== "header-td")
+	{
+		base64 += colour_scheme[prop].toString(16).padStart(6, '0').toUpperCase();
+	}
+	// let chunks = [];
+	// for (let i = 0; i < base64.length; i += 13)
+	// {
+	// 	let chunk = base64.slice(i, i + 13);
+	// 	chunks.push(btoa(chunk));
+	// }
+	// let base64_url = chunks.join('');
+	let base64_url = btoa(base64);
+	let url = window.location.href.split('?')[0];
+	url += `?colour=${base64_url}`;
+	window.history.pushState({ path: url }, '', url);
+	
+	navigator.clipboard.writeText(url);
+	message.innerHTML = "Share link copied to clipboard";
+	message.style.color = "green";
 });
 
 generate_button.addEventListener("click", () =>
 {
 	editor.setValue(colour_scheme.generateXML());
-	error_message.innerHTML = '';
+	message.innerHTML = '';
 	colouriseText();
 });
 
@@ -345,11 +426,11 @@ load_button.addEventListener("click", () =>
 	try { colour_scheme.loadXML(editor.getValue()); }
 	catch (error)
 	{
-		error_message.innerHTML = `Error: ${error.message}`;
-		error_message.style.color = "red";
+		message.innerHTML = `Error: ${error.message}`;
+		message.style.color = "red";
 		return;
 	}
-	error_message.innerHTML = '';
+	message.innerHTML = '';
 
 	selector_change = true;
 	editor.setValue(colour_scheme.generateXML());
