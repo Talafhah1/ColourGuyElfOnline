@@ -14,7 +14,7 @@
 	align-items: center;
 }
 
-@media only screen and (max-width: 60rem)
+@media only screen and (max-width: 1200px)
 {
 	.main
 	{
@@ -90,9 +90,9 @@
 	
 	.CodeMirror
 	{
-		height: calc(70vh - 9rem);
-		min-height: calc(70vh - 9rem);
-		max-height: calc(70vh - 9rem);
+		height: calc(70vh - 6rem);
+		min-height: calc(70vh - 6rem);
+		max-height: calc(70vh - 6rem);
 	}
 
 	.CodeMirror-lines
@@ -107,7 +107,7 @@
 	}
 }
 
-@media only screen and (min-width: 60rem)
+@media only screen and (min-width: 1200px)
 {
 	.colours
 	{
@@ -243,6 +243,7 @@ td
 	margin: 0;
 	margin-left: .25rem;
 	max-width: calc(100% - 12.75rem);
+	min-width: 50%;
 	flex-grow: 1;
 }
 
