@@ -307,6 +307,7 @@ function shadeColour(colour, shade)
 
 function colouriseText()
 {
+	return;
 	let pres = document.getElementsByClassName("CodeMirror-line");
 	let spans = [];
 	for (let pre of pres) spans.push(pre.getElementsByTagName("span")[0]);
@@ -368,7 +369,7 @@ var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
 {
 	lineNumbers: true,
 	mode: "application/xml",
-	htmlMode: true
+	htmlMode: true,
 });
 
 let load_button = document.getElementById("load-button");
