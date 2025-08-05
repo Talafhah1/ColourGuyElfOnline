@@ -7,6 +7,8 @@
 		<IconFileName>UI_Icons</IconFileName>
 		<UniversalIconName>--</UniversalIconName>
 		<UniversalIconFileName>UI_Icons</UniversalIconFileName>
+		<InfinityIconName>--</InfinityIconName>
+		<InfinityIconFileName>UI_Icons</InfinityIconFileName>
 		<UniversalIconOriginalDimension>0</UniversalIconOriginalDimension>
 		<OrderID>0</OrderID>
 		<Rarity>M</Rarity>
@@ -136,7 +138,7 @@
 		<Weapon_Swap>0x747680</Weapon_Swap>
 		<WeaponDk_Swap>0x32455D</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x7D8B9F</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Green,Cyan,TeamBlue1,CommunityColors,Ranked,Ranked2,BattlePass01,BattlePass02,Space,Purple,HomeTeam,Esport,BP8,Bifrost,BP10,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Green,Cyan,TeamBlue1,CommunityColors,Ranked,Ranked2,BattlePass01,BattlePass02,Space,Purple,HomeTeam,Esport,BP8,Bifrost,BP10,EsportSeafoam,Summer2</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<FallbackMyTeamColor>TeamBlue1</FallbackMyTeamColor>
 		<IndicatorColor>0x0A77EF</IndicatorColor>
@@ -225,7 +227,7 @@
 		<Weapon_Swap>0x798071</Weapon_Swap>
 		<WeaponDk_Swap>0x3B5839</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x889F7D</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Cyan,TeamBlue1,Holiday,StPaddy,GameFuel,BattlePass01,BattlePass03,Spring,Esport,EsportElectric,BP6,BP7,TeamYellow1,Bifrost,BP11,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Cyan,TeamBlue1,Holiday,StPaddy,GameFuel,BattlePass01,BattlePass03,Spring,Esport,EsportElectric,BP6,BP7,TeamYellow1,Bifrost,BP11,EsportSeafoam,Summer2</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x25C76D</IndicatorColor>
 	</ColorSchemeType>
@@ -402,7 +404,7 @@
 		<Weapon_Swap>0x707C7E</Weapon_Swap>
 		<WeaponDk_Swap>0x295666</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x8AA6A3</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Green,Purple,TeamBlue1,CommunityColors,BattlePass01,Esport,Space,Summer,Ranked,BP8,Bifrost,BP10,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Green,Purple,TeamBlue1,CommunityColors,BattlePass01,Esport,Space,Summer,Ranked,BP8,Bifrost,BP10,EsportSeafoam,Summer2</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<FallbackMyTeamColor>TeamBlue1</FallbackMyTeamColor>
 		<IndicatorColor>0x50CCD7</IndicatorColor>
@@ -536,7 +538,7 @@
 		<Weapon_Swap>0x303035</Weapon_Swap>
 		<WeaponDk_Swap>0x020202</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x5E5864</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Purple,Brown,Grey,Brawlhalloween,HomeTeam,GameFuel,EsportRed,BP6,100Mil,BP9,EsportHelios,BP11,Esport,ArtDeco</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Purple,Brown,Grey,Brawlhalloween,HomeTeam,GameFuel,EsportRed,BP6,100Mil,BP9,EsportHelios,BP11,Esport,ArtDeco,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamBlue1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x24272D</IndicatorColor>
 	</ColorSchemeType>
@@ -579,7 +581,7 @@
 		<Weapon_Swap>0xc8ccbf</Weapon_Swap>
 		<WeaponDk_Swap>0xa1a795</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xc1c8a1</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Black,HomeTeam,Ranked,Ranked2,Holiday,Green,StPaddy,BattlePass01,BP6,BP7,100Mil,BP9,BP11,ArtDeco</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Black,HomeTeam,Ranked,Ranked2,Holiday,Green,StPaddy,BattlePass01,BP6,BP7,100Mil,BP9,BP11,ArtDeco,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x95c93c</IndicatorColor>
 	</ColorSchemeType>
@@ -625,7 +627,7 @@
 		<Weapon_Swap>0xFFE293</Weapon_Swap>
 		<WeaponDk_Swap>0xBE886F</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xC7E5BB</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Green,Cyan,TeamBlue1,BattlePass02,BattlePass03,GameFuel,Esport,Space,BP6,Ranked,100Mil,BP8,Bifrost,BP10,BP11,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Green,Cyan,TeamBlue1,BattlePass02,BattlePass03,GameFuel,Esport,Space,BP6,Ranked,100Mil,BP8,Bifrost,BP10,BP11,EsportSeafoam,BP7,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<FallbackMyTeamColor>TeamBlue1</FallbackMyTeamColor>
 		<IndicatorColor>0x4665A1</IndicatorColor>
@@ -672,8 +674,8 @@
 		<Weapon_Swap>0x7CD8FF</Weapon_Swap>
 		<WeaponDk_Swap>0x706BE1</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xCDA2FF</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Purple,Sunset,BattlePass01,TeamRed1,Pink,Valhallentines,HomeTeam,100Mil,BP8,Bifrost,BP10</ExcludeOpponentTeamColor>
-		<FallbackOpponentTeamColor>TeamBlue1</FallbackOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Purple,Sunset,BattlePass01,Pink,Valhallentines,HomeTeam,100Mil,BP8,Bifrost,BP10</ExcludeOpponentTeamColor>
+		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0xFF23A0</IndicatorColor>
 	</ColorSchemeType>
 	<ColorSchemeType ColorSchemeName="Esport">
@@ -717,7 +719,7 @@
 		<Weapon_Swap>0x3AFFC5</Weapon_Swap>
 		<WeaponDk_Swap>0x22CAE5</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x59E9DF</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Cyan,CommunityColors,Ranked,Ranked2,TeamBlue1,Blue,BattlePass01,Space,Green,100Mil,Brawlhalloween,EsportElectric,BP11,Black,ArtDeco,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Cyan,CommunityColors,Ranked,Ranked2,TeamBlue1,Blue,BattlePass01,Space,Green,100Mil,Brawlhalloween,EsportElectric,BP11,Black,ArtDeco,EsportSeafoam,Summer2,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x3AFFC5</IndicatorColor>
 	</ColorSchemeType>
@@ -806,7 +808,7 @@
 		<Weapon_Swap>0xC2D7E4</Weapon_Swap>
 		<WeaponDk_Swap>0x7E91A6</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x90B6C1</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Green,Holiday,StPaddy,BattlePass01,Anniversary,White,Grey,Ranked,Pink,Spring,Valhallentines,Ranked2,Space,OEL1,EsportHelios</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Green,Holiday,StPaddy,BattlePass01,Anniversary,White,Grey,Ranked,Pink,Spring,Valhallentines,Ranked2,Space,OEL1,EsportHelios,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x60939C</IndicatorColor>
 	</ColorSchemeType>
@@ -849,7 +851,7 @@
 		<Weapon_Swap>0xD0C3BA</Weapon_Swap>
 		<WeaponDk_Swap>0x9EA0AA</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xA4B6CD</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Green,CommunityColors2,Summer,Anniversary,Holiday,Valhallentines,StPaddy,BattlePass03,TeamBlue1,Yellow,Orange,BP7,EsportElectric,EsportPink,TeamYellow1,Bifrost,BP11</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Green,CommunityColors2,Summer,Anniversary,Holiday,Valhallentines,StPaddy,BattlePass03,TeamBlue1,Yellow,Orange,BP7,EsportElectric,EsportPink,TeamYellow1,Bifrost,BP11,Summer2</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0xB0D08E</IndicatorColor>
 	</ColorSchemeType>
@@ -976,7 +978,7 @@
 		<Weapon_Swap>0x857E7F</Weapon_Swap>
 		<WeaponDk_Swap>0x3C4256</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x939CAA</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Brown,Cyan,TeamBlue1,Grey,Ranked,Ranked2,Esport,BP6,CommunityColors2,TeamYellow1,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Brown,Cyan,TeamBlue1,Grey,Ranked,Ranked2,Esport,BP6,CommunityColors2,TeamYellow1,EsportSeafoam,Summer2</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x8A6453</IndicatorColor>
 	</ColorSchemeType>
@@ -1062,7 +1064,7 @@
 		<Weapon_Swap>0xEBE5FA</Weapon_Swap>
 		<WeaponDk_Swap>0xFFC4FB</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xE5F0FA</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Red,Pink,TeamRed1,Sunset,BattlePass03,Spring,CommunityColors2,BattlePass02,EsportPink,Bifrost</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Red,Pink,TeamRed1,Sunset,BattlePass03,Spring,CommunityColors2,BattlePass02,EsportPink,Bifrost,BP10,BP7</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamBlue1</FallbackOpponentTeamColor>
 		<FallbackMyTeamColor>TeamRed1</FallbackMyTeamColor>
 		<IndicatorColor>0xF383C0</IndicatorColor>
@@ -1108,7 +1110,7 @@
 		<Weapon_Swap>0xD4B86E</Weapon_Swap>
 		<WeaponDk_Swap>0xC38C59</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xDFAB6C</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Black,HomeTeam,Red,TeamRed1,Brawlhalloween,Brown,OEL1,100Mil,BP9,BP11,ArtDeco</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Black,HomeTeam,Red,TeamRed1,Brawlhalloween,Brown,OEL1,100Mil,BP9,BP11,ArtDeco,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamBlue1</FallbackOpponentTeamColor>
 		<FallbackMyTeamColor>TeamRed1</FallbackMyTeamColor>
 		<IndicatorColor>0x352831</IndicatorColor>
@@ -1238,7 +1240,7 @@
 		<Weapon_Swap>0xC4DCFF</Weapon_Swap>
 		<WeaponDk_Swap>0x84A7CA</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xBBE6F0</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,TeamBlue1,CommunityColors,HomeTeam,Ranked2,GameFuel,Grey,BattlePass03,Esport,Anniversary,Purple,Space,Cyan,BattlePass01,100Mil,BP8,EsportHelios,BP11,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,TeamBlue1,CommunityColors,HomeTeam,Ranked2,GameFuel,Grey,BattlePass03,Esport,Anniversary,Purple,Space,Cyan,BattlePass01,100Mil,BP8,EsportHelios,BP11,EsportSeafoam,Summer2</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<FallbackMyTeamColor>TeamBlue1</FallbackMyTeamColor>
 		<IndicatorColor>0x636970</IndicatorColor>
@@ -1368,7 +1370,7 @@
 		<Weapon_Swap>0xD9AB25</Weapon_Swap>
 		<WeaponDk_Swap>0x65300B</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xF7C82D</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Green,Holiday,GameFuel,BattlePass03,Spring,BP11</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Green,Holiday,GameFuel,BattlePass03,Spring,BP11,EsportElectric</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x45663E</IndicatorColor>
 	</ColorSchemeType>
@@ -1544,7 +1546,7 @@
 		<Weapon_Swap>0x1A293C</Weapon_Swap>
 		<WeaponDk_Swap>0x150B13</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x392257</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Yellow,Summer,Green,Orange,Spring,BP7,Esport,TeamYellow1,Bifrost</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Yellow,Summer,Green,Orange,Spring,BP7,Esport,TeamYellow1,Bifrost,Summer2,StPaddy</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0xFFE467</IndicatorColor>
 	</ColorSchemeType>
@@ -1636,7 +1638,7 @@
 		<Weapon_Swap>0xADEF00</Weapon_Swap>
 		<WeaponDk_Swap>0x55D100</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xA6F452</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Green,Spring,EsportElectric,GameFuel,TeamYellow1,Bifrost,BP10,BP11</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Green,Spring,EsportElectric,GameFuel,TeamYellow1,Bifrost,BP10,BP11,BattlePass01,Valhallentines</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0xBBF12B</IndicatorColor>
 	</ColorSchemeType>
@@ -1680,7 +1682,7 @@
 		<Weapon_Swap>0x4B27BB</Weapon_Swap>
 		<WeaponDk_Swap>0x2D0F52</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x4E178B</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Purple,Black,GameFuel,BattlePass01,BattlePass02,Esport,EsportRed,Brawlhalloween,Ranked,Anniversary,BP8,BP9,BP11,ArtDeco</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Purple,Black,GameFuel,BattlePass01,BattlePass02,Esport,EsportRed,Brawlhalloween,Ranked,Anniversary,BP8,BP9,BP11,ArtDeco,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x852FF4</IndicatorColor>
 	</ColorSchemeType>
@@ -1770,7 +1772,7 @@
 		<Weapon_Swap>0xDDC08C</Weapon_Swap>
 		<WeaponDk_Swap>0x977456</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xC28E64</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Purple,Cyan,BattlePass01,BattlePass02,100Mil,Ranked,OEL1,Sunset,HomeTeam,Bifrost,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Purple,Cyan,BattlePass01,BattlePass02,100Mil,Ranked,OEL1,Sunset,HomeTeam,Bifrost,EsportSeafoam,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x484F6B</IndicatorColor>
 	</ColorSchemeType>
@@ -1861,7 +1863,7 @@
 		<Weapon_Swap>0xFFC676</Weapon_Swap>
 		<WeaponDk_Swap>0xFF83E4</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xEDB3FF</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Green,Cyan,TeamBlue1,BattlePass02,BattlePass01,EsportElectric,EsportPink,Sunset,Purple,Pink,BP8,CommunityColors2,Valhallentines,Summer,BP7,Spring,BP10,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Green,Cyan,TeamBlue1,BattlePass02,BattlePass01,EsportElectric,EsportPink,Sunset,Purple,Pink,BP8,CommunityColors2,Valhallentines,Summer,BP7,Spring,BP10,EsportSeafoam,Summer2</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0xADFFF6</IndicatorColor>
 	</ColorSchemeType>
@@ -1906,7 +1908,7 @@
 		<Weapon_Swap>0xFFC269</Weapon_Swap>
 		<WeaponDk_Swap>0xCF7953</WeaponDk_Swap>
 		<WeaponAcc_Swap>0xC495A2</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Purple,Brown,Grey,Brawlhalloween,HomeTeam,GameFuel,EsportRed,BP6,100Mil,BP9,EsportHelios,BP11,Esport,Black</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Purple,Brown,Grey,Brawlhalloween,HomeTeam,GameFuel,EsportRed,BP6,100Mil,BP9,EsportHelios,BP11,Esport,Black,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamBlue1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x252029</IndicatorColor>
 	</ColorSchemeType>
@@ -1992,7 +1994,7 @@
 		<Weapon_Swap>0x2B2037</Weapon_Swap>
 		<WeaponDk_Swap>0x210E24</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x4B2940</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Green,Purple,TeamBlue1,CommunityColors,BattlePass01,Esport,Space,Summer,Ranked,BP8,Bifrost,BP10,Cyan</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Green,Purple,TeamBlue1,CommunityColors,BattlePass01,Esport,Space,Summer,Ranked,BP8,Bifrost,BP10,Cyan,Summer2,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x97C3B5</IndicatorColor>
 	</ColorSchemeType>
@@ -2038,7 +2040,7 @@
 		<Weapon_Swap>0x80C8DB</Weapon_Swap>
 		<WeaponDk_Swap>0x6689D2</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x7BCFDF</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>TeamBlue1,Pink,EsportPink,Blue,Cyan,White,CommunityColors2,Purple,BP7,Space,Bifrost,BattlePass01,BattlePass02,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>TeamBlue1,Pink,EsportPink,Blue,Cyan,White,CommunityColors2,Purple,BP7,Space,Bifrost,BattlePass01,BattlePass02,EsportSeafoam,Valhallentines</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<FallbackMyTeamColor>TeamBlue1</FallbackMyTeamColor>
 		<IndicatorColor>0xA6DDFF</IndicatorColor>
@@ -2085,9 +2087,100 @@
 		<Weapon_Swap>0xC38619</Weapon_Swap>
 		<WeaponDk_Swap>0x506A33</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x9FA832</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Brawlhalloween,Spring,Esport,Black,HomeTeam,Ranked,Ranked2,Holiday,Green,StPaddy,BattlePass01,BP6,BP7,100Mil,BP9,EsportRed,GameFuel,ArtDeco</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Brawlhalloween,Spring,Esport,Black,HomeTeam,Ranked,Ranked2,Holiday,Green,StPaddy,BattlePass01,BP6,BP7,100Mil,BP9,EsportRed,GameFuel,ArtDeco,EsportDigital</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamBlue1</FallbackOpponentTeamColor>
 		<IndicatorColor>0xB0FF61</IndicatorColor>
+	</ColorSchemeType>
+	<ColorSchemeType ColorSchemeName="Summer2">
+		<ColorSchemeID>47</ColorSchemeID>
+		<DefaultUnlocked>FALSE</DefaultUnlocked>
+		<DisplayNameKey>ColorSchemeType_Summer2_DisplayName</DisplayNameKey>
+		<IconName>a_ColorIcon_Summer2</IconName>
+		<IconFileName>UI_Icons</IconFileName>
+		<UniversalIconName>a_ColorIcon_Summer2Universal</UniversalIconName>
+		<UniversalIconFileName>UI_Icons</UniversalIconFileName>
+		<UniversalIconOriginalDimension>80</UniversalIconOriginalDimension>
+		<OrderID>30</OrderID>
+		<Rarity>R</Rarity>
+		<TeamColor>0</TeamColor>
+		<HairLt_Swap>0xF7F59F</HairLt_Swap>
+		<Hair_Swap>0xEDCD6D</Hair_Swap>
+		<HairDk_Swap>0xC78357</HairDk_Swap>
+		<Body1VL_Swap>0xCCFFE1</Body1VL_Swap>
+		<Body1Lt_Swap>0x7CFCFF</Body1Lt_Swap>
+		<Body1_Swap>0x55D7FF</Body1_Swap>
+		<Body1Dk_Swap>0x3486F4</Body1Dk_Swap>
+		<Body1VD_Swap>0x303B9E</Body1VD_Swap>
+		<Body1Acc_Swap>0x3BD2D6</Body1Acc_Swap>
+		<Body2VL_Swap>0xFFFDD8</Body2VL_Swap>
+		<Body2Lt_Swap>0xFFF865</Body2Lt_Swap>
+		<Body2_Swap>0xD4FF48</Body2_Swap>
+		<Body2Dk_Swap>0x8CF670</Body2Dk_Swap>
+		<Body2VD_Swap>0x62DE9B</Body2VD_Swap>
+		<Body2Acc_Swap>0xAAFFE5</Body2Acc_Swap>
+		<SpecialVL_Swap>0xFCFFF6</SpecialVL_Swap>
+		<SpecialLt_Swap>0xEFFF6E</SpecialLt_Swap>
+		<Special_Swap>0xFFEE36</Special_Swap>
+		<SpecialDk_Swap>0xF79D00</SpecialDk_Swap>
+		<SpecialVD_Swap>0xE65B00</SpecialVD_Swap>
+		<SpecialAcc_Swap>0xFEC927</SpecialAcc_Swap>
+		<ClothVL_Swap>0xFEFFF9</ClothVL_Swap>
+		<ClothLt_Swap>0xFFFDDA</ClothLt_Swap>
+		<Cloth_Swap>0xFFF4B8</Cloth_Swap>
+		<ClothDk_Swap>0xE3B593</ClothDk_Swap>
+		<WeaponVL_Swap>0xF5FFC8</WeaponVL_Swap>
+		<WeaponLt_Swap>0xFBE712</WeaponLt_Swap>
+		<Weapon_Swap>0xF78D23</Weapon_Swap>
+		<WeaponDk_Swap>0xD54914</WeaponDk_Swap>
+		<WeaponAcc_Swap>0xFF815B</WeaponAcc_Swap>
+		<ExcludeOpponentTeamColor>Blue,Green,Cyan,EsportElectric,Spring,TeamBlue1,Bifrost,EsportSeafoam,CommunityColors,Esport,Ranked,Bifrost</ExcludeOpponentTeamColor>
+		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
+		<IndicatorColor>0x55D7FF</IndicatorColor>
+	</ColorSchemeType>
+	<ColorSchemeType ColorSchemeName="EsportDigital">
+		<ColorSchemeID>48</ColorSchemeID>
+		<DefaultUnlocked>FALSE</DefaultUnlocked>
+		<DisplayNameKey>ColorSchemeType_EsportDigital_DisplayName</DisplayNameKey>
+		<IconName>a_ColorIcon_EsportDigital</IconName>
+		<IconFileName>UI_Icons</IconFileName>
+		<InfinityIconName>a_ColorIcon_EsportDigitalInfinity</InfinityIconName>
+		<InfinityIconFileName>UI_Icons</InfinityIconFileName>
+		<OrderID>106</OrderID>
+		<Rarity>R</Rarity>
+		<TeamColor>0</TeamColor>
+		<HairLt_Swap>0x61FFDC</HairLt_Swap>
+		<Hair_Swap>0x26C2E2</Hair_Swap>
+		<HairDk_Swap>0x455FC4</HairDk_Swap>
+		<Body1VL_Swap>0x5B685E</Body1VL_Swap>
+		<Body1Lt_Swap>0x454D47</Body1Lt_Swap>
+		<Body1_Swap>0x363636</Body1_Swap>
+		<Body1Dk_Swap>0x1F1F20</Body1Dk_Swap>
+		<Body1VD_Swap>0x141414</Body1VD_Swap>
+		<Body1Acc_Swap>0x354656</Body1Acc_Swap>
+		<Body2VL_Swap>0xFFD5DA</Body2VL_Swap>
+		<Body2Lt_Swap>0xF778BB</Body2Lt_Swap>
+		<Body2_Swap>0xF5018A</Body2_Swap>
+		<Body2Dk_Swap>0xA215A5</Body2Dk_Swap>
+		<Body2VD_Swap>0x63127A</Body2VD_Swap>
+		<Body2Acc_Swap>0x8D6DC0</Body2Acc_Swap>
+		<SpecialVL_Swap>0xEBFFBC</SpecialVL_Swap>
+		<SpecialLt_Swap>0x9AFC34</SpecialLt_Swap>
+		<Special_Swap>0x28DF89</Special_Swap>
+		<SpecialDk_Swap>0x1DAB87</SpecialDk_Swap>
+		<SpecialVD_Swap>0x007565</SpecialVD_Swap>
+		<SpecialAcc_Swap>0x64DBCD</SpecialAcc_Swap>
+		<ClothVL_Swap>0xECF2F6</ClothVL_Swap>
+		<ClothLt_Swap>0xC2D6D2</ClothLt_Swap>
+		<Cloth_Swap>0x96A7AF</Cloth_Swap>
+		<ClothDk_Swap>0x656E84</ClothDk_Swap>
+		<WeaponVL_Swap>0x61FFDC</WeaponVL_Swap>
+		<WeaponLt_Swap>0x26C2E2</WeaponLt_Swap>
+		<Weapon_Swap>0x1F98CF</Weapon_Swap>
+		<WeaponDk_Swap>0x455FC4</WeaponDk_Swap>
+		<WeaponAcc_Swap>0x4C95A0</WeaponAcc_Swap>
+		<ExcludeOpponentTeamColor>Black,GameFuel,100Mil,BattlePass01,BattlePass03,BP11,BP8,Esport,EsportRed,ArtDeco,EsportSeafoam</ExcludeOpponentTeamColor>
+		<FallbackOpponentTeamColor>TeamBlue1</FallbackOpponentTeamColor>
+		<IndicatorColor>0x363636</IndicatorColor>
 	</ColorSchemeType>
 	<ColorSchemeType ColorSchemeName="NO_COLOR_SCHEME">
 		<ColorSchemeID>64</ColorSchemeID>
@@ -2137,7 +2230,7 @@
 		<Weapon_Swap>0x706868</Weapon_Swap>
 		<WeaponDk_Swap>0x322B27</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x937E7B</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Red,Orange,Purple,Brown,Pink,Sunset,Valhallentines,EsportRed,BattlePass02,OEL1,EsportPink,BP9</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Red,Orange,Purple,Brown,Pink,Sunset,Valhallentines,EsportRed,OEL1,EsportPink,BP9</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamBlue1</FallbackOpponentTeamColor>
 		<IndicatorColor>0xCF1F31</IndicatorColor>
 	</ColorSchemeType>
@@ -2303,7 +2396,7 @@
 		<Weapon_Swap>0x607577</Weapon_Swap>
 		<WeaponDk_Swap>0x2A4845</WeaponDk_Swap>
 		<WeaponAcc_Swap>0x718B98</WeaponAcc_Swap>
-		<ExcludeOpponentTeamColor>Blue,Green,Cyan,CommunityColors,Ranked,Ranked2,BattlePass01,Space,Spring,Esport,Bifrost,BP10,EsportSeafoam</ExcludeOpponentTeamColor>
+		<ExcludeOpponentTeamColor>Blue,Green,Cyan,CommunityColors,Ranked,Ranked2,BattlePass01,Space,Spring,Esport,Bifrost,BP10,EsportSeafoam,Summer2</ExcludeOpponentTeamColor>
 		<FallbackOpponentTeamColor>TeamRed1</FallbackOpponentTeamColor>
 		<IndicatorColor>0x50CCD7</IndicatorColor>
 	</ColorSchemeType>
