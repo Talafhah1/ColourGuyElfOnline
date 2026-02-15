@@ -247,7 +247,7 @@ td
 	align-items: center;
 	margin: 0;
 	margin-left: .25rem;
-	max-width: calc(100% - 12.75rem);
+	max-width: calc(100% - 16rem);
 	min-width: 50%;
 	flex-grow: 1;
 }
@@ -288,6 +288,28 @@ select
 	text-align: left;
 	cursor: pointer;
 	flex-grow: 1;
+}
+
+#format-select
+{
+	width: 6rem;
+	min-width: 6rem;
+	max-width: 6rem;
+	flex-grow: 0;
+	text-align: center;
+	padding: .5rem;
+	height: 2rem;
+	font-family: 'Consolas', Courier, monospace;
+	font-size: .75rem;
+	border: none;
+	margin-left: .25rem;
+	cursor: pointer;
+}
+
+.save-file-button
+{
+	width: 7rem;
+	min-width: 7rem;
 }
 
 img

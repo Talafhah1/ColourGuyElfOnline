@@ -13,6 +13,7 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.css">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/mode/xml/xml.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/mode/properties/properties.min.js"></script>
 </head>
 <body>
 	<div class="main">
@@ -119,7 +120,11 @@
 		<div class="xml-area">
 			<div class="button-list">
 				<select id="game-select-dropdown" title="Load a built-in game Colour Scheme.  Make sure to click the load button after selecting a Colour Scheme"></select>
-				<button id="load-button" class="load-button" title="Load XML into colour grid">Load</button>
+				<select id="format-select" title="Choose output/input format">
+					<option value="xml">XML</option>
+					<option value="wcolor">WColor</option>
+				</select>
+				<button id="load-button" class="load-button" title="Load input into colour grid">Load</button>
 				<button id="randomise-button" title="Randomise all colours">Randomise</button>
 				<button id="shade-button" title="Automatically calculate all shades based on the Base shade">Auto Shade</button>
 			</div>
@@ -127,13 +132,14 @@
 				<select id="saved-select-dropdown" title="Load a saved custom Colour Scheme.  Make sure to click the load button after selecting a Colour Scheme"></select>
 				<button id="save-button" class="save-button" title="Generate XML and save Colour Scheme">Save</button>
 				<button id="delete-button" class="delete-button" title="Delete selected Colour Scheme">Delete</button>
-				<button id="generate-button" title="Generate XML based on current colour grid">Generate</button>
+				<button id="generate-button" title="Generate output based on current colour grid">Generate</button>
 			</div>
 			<textarea spellcheck="false" id="xml-input" class="xml-editor"></textarea>
 			<div class="button-list">
 				<p id="message" class="message"></p>
 				<button id="share-button" title="Generate XML and copy permalink to this Colour Scheme">Share</button>
-				<button id="copy-button" title="Copy XML to clipboard">Copy</button>
+				<button id="copy-button" title="Copy to clipboard">Copy</button>
+				<button id="save-file-button" class="save-file-button" title="Save as file">Save File</button>
 			</div>
 		</div>
 	</div>

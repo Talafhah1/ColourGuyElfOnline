@@ -41,6 +41,59 @@ class ColorSchemeType
 		return xml;
 	}
 
+	generateINI()
+	{
+		let ini = "";
+		for (let prop in this)
+		{
+			if (typeof this[prop] != "function" && prop !== "header-td")
+			{
+				let key = prop.replace(/_Swap$/, "");
+				ini += key + "=#" + this[prop].toString(16).padStart(6, '0').toUpperCase() + "\n";
+			}
+		}
+		return ini.trimEnd();
+	}
+
+	loadINI(ini)
+	{
+		try
+		{
+			let lines = ini.split(/\r?\n/).filter(l => l.trim() !== "");
+			let map = {};
+			for (let line of lines)
+			{
+				let eq = line.indexOf("=");
+				if (eq === -1) throw new Error(`Invalid line: ${line}`);
+				let key = line.slice(0, eq).trim();
+				let value = line.slice(eq + 1).trim();
+				map[key] = value;
+			}
+			let autolocks = document.getElementsByClassName("autolock");
+			for (let prop in this)
+			{
+				if (typeof this[prop] != "function" && prop !== "header-td")
+				{
+					let autolock = `${prop.split(/(?=[A-Z])/)[0].toLowerCase().replace(/_/g, '')}-checkbox`;
+					if (autolocks.namedItem(autolock) && autolocks.namedItem(autolock).checked) continue;
+					let key = prop.replace(/_Swap$/, "");
+					if (!(key in map)) throw new Error(`Missing value for property ${key}`);
+					let value = map[key];
+					if (value.startsWith("#")) value = value.slice(1);
+					if (value.startsWith("0x") || value.startsWith("0X")) value = value.slice(2);
+					let result = parseInt(value, 16);
+					if (isNaN(result)) throw new Error(`Invalid value for property ${key}`);
+					else this[prop] = result;
+				}
+			}
+		}
+		catch (error)
+		{
+			console.error(`Failed to load INI: ${error.message}`);
+			throw error;
+		}
+	}
+
 	loadXML(xml)
 	{
 		try
@@ -142,6 +195,15 @@ class GameColorSchemeType extends ColorSchemeType
 		xml = xml.replace(/<TeamColor>.*<\/TeamColor>\n/, '');
 		xml = xml.replace(/>\s*<\/ColorSchemeType>/, ">\n</ColorSchemeType>");
 		return xml;
+	}
+
+	generateINI()
+	{
+		let ini = super.generateINI();
+		ini = ini.replace(/^DisplayNameKey=.*$/m, '');
+		ini = ini.replace(/^OrderID=.*$/m, '');
+		ini = ini.replace(/^TeamColor=.*$/m, '');
+		return ini.replace(/\n{2,}/g, '\n').trim();
 	}
 
 	loadXML(xml)
@@ -372,6 +434,25 @@ var editor = CodeMirror.fromTextArea(document.getElementById("xml-input"),
 	htmlMode: true,
 });
 
+let format_select = document.getElementById("format-select");
+
+function getFormat() { return format_select.value; }
+
+function generateOutput() { return getFormat() === "wcolor" ? colour_scheme.generateINI() : colour_scheme.generateXML(); }
+
+function loadInput(text)
+{
+	if (getFormat() === "wcolor") colour_scheme.loadINI(text);
+	else colour_scheme.loadXML(text);
+}
+
+format_select.addEventListener("change", () =>
+{
+	if (getFormat() === "wcolor") editor.setOption("mode", "text/x-properties");
+	else editor.setOption("mode", "application/xml");
+	editor.setValue(generateOutput());
+});
+
 let load_button = document.getElementById("load-button");
 let generate_button = document.getElementById("generate-button");
 let copy_button = document.getElementById("copy-button");
@@ -380,13 +461,30 @@ let randomise_button = document.getElementById("randomise-button");
 let share_button = document.getElementById("share-button");
 let save_button = document.getElementById("save-button");
 let delete_button = document.getElementById("delete-button");
+let save_file_button = document.getElementById("save-file-button");
 
 let selector_change = false;
 
 copy_button.addEventListener("click", () =>
 {
 	navigator.clipboard.writeText(editor.getValue());
-	message.innerHTML = "XML copied to clipboard";
+	message.innerHTML = `${getFormat() === "wcolor" ? "WColor" : "XML"} copied to clipboard`;
+	message.style.color = "green";
+});
+
+save_file_button.addEventListener("click", () =>
+{
+	let content = editor.getValue();
+	let isWColor = getFormat() === "wcolor";
+	let ext = isWColor ? ".wcolor" : ".xml";
+	let mime = isWColor ? "text/plain" : "application/xml";
+	let blob = new Blob([content], { type: mime });
+	let a = document.createElement("a");
+	a.href = URL.createObjectURL(blob);
+	a.download = "ColorSchemeType" + ext;
+	a.click();
+	URL.revokeObjectURL(a.href);
+	message.innerHTML = `Saved as ${a.download}`;
 	message.style.color = "green";
 });
 
@@ -407,14 +505,14 @@ share_button.addEventListener("click", () =>
 
 generate_button.addEventListener("click", () =>
 {
-	editor.setValue(colour_scheme.generateXML());
+	editor.setValue(generateOutput());
 	message.innerHTML = '';
 	colouriseText();
 });
 
 load_button.addEventListener("click", () =>
 {
-	try { colour_scheme.loadXML(editor.getValue()); }
+	try { loadInput(editor.getValue()); }
 	catch (error)
 	{
 		message.innerHTML = `Error: ${error.message}`;
@@ -424,7 +522,7 @@ load_button.addEventListener("click", () =>
 	message.innerHTML = '';
 
 	selector_change = true;
-	editor.setValue(colour_scheme.generateXML());
+	editor.setValue(generateOutput());
 	selector_change = false;
 
 	let tds = document.querySelectorAll("td:not(.label-td)");
@@ -507,7 +605,7 @@ for (let input of inputs) input.addEventListener("change", () =>
 	colour_scheme[input.parentNode.className] = colorValue !== 0 ? colorValue : BLACK_FALLBACK;
 });
 
-editor.setValue(colour_scheme.generateXML());
+editor.setValue(generateOutput());
 load_button.click();
 
 let colour_schemes = [];
@@ -628,7 +726,7 @@ game_select.addEventListener("change", () =>
 	let colour_scheme_name = game_select.value;
 	for (let scheme of colour_schemes) if (scheme.DisplayNameKey === colour_scheme_name) colour_scheme = scheme;
 	selector_change = true;
-	editor.setValue(colour_scheme.generateXML());
+	editor.setValue(getFormat() === "wcolor" ? colour_scheme.generateINI() : colour_scheme.generateXML());
 	selector_change = false;
 	colouriseText();
 });
@@ -642,7 +740,7 @@ saved_select.addEventListener("change", () =>
 	colour_scheme.loadXML(saved_select.value);
 	
 	selector_change = true;
-	editor.setValue(colour_scheme.generateXML());
+	editor.setValue(getFormat() === "wcolor" ? colour_scheme.generateINI() : colour_scheme.generateXML());
 	selector_change = false;
 	colouriseText();
 });
