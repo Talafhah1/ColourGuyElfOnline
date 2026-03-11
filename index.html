@@ -1,148 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>ColourGuyElf Online</title>
-	<meta property="og:title" content="ColourGuyElf Online">
-	<meta property="og:description" content="A basic web application that can create Brawlhalla ColorSchemeType partial objects with a visual interface.">
-	<meta property="og:image" content="https://raw.githubusercontent.com/Talafhah1/ColourGuyElfOnline/main/favicon.png">
-	<meta property="og:url" content="https://talafhah1.github.io/ColourGuyElfOnline/">
-	<link rel="stylesheet" href="styles.css">
-	<link rel="icon" href="favicon.png" type="image/x-icon">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.css">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/codemirror.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/mode/xml/xml.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.58.3/mode/properties/properties.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ColourGuyElf Online — Brawlhalla Colour Scheme Editor</title>
+  <meta name="description" content="Visual colour scheme editor for Brawlhalla ColorSchemeTypes with live preview, code export, and sharing.">
+  <link rel="icon" href="favicon.png">
+
+  <!-- CodeMirror 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/theme/material-darker.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.18/mode/properties/properties.min.js"></script>
+
+  <!-- App styles -->
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-	<div class="main">
-		<div class="colours">
-			<table>
-				<tr>
-					<td class="label-td">
-						<a href="https://talafhah1.github.io/ColourGuyElfOnline/">
-							<img src="https://raw.githubusercontent.com/Talafhah1/ColourGuyElfOnline/main/favicon.png" alt="ColourGuyElf Online" title="ColourGuyElf Online" class="favicon">
-						</a>
-					</td>
-					<td class="label-td">
-						<div class="header-td">
-							<p class="table-label table-header" title="Mostly used for hair and some cloth- and leather-like materials">Hair</p>
-							<input type="checkbox" id="hair-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
-						</div>
-					</td>
-					<td class="label-td">
-						<div class="header-td">
-							<p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Primary&quot;">Body 1</p>
-							<input type="checkbox" id="body1-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
-						</div>
-					</td>
-					<td class="label-td">
-						<div class="header-td">
-							<p class="table-label table-header" title="Used for the main colours on a skin; sometimes referred to as &quot;Secondary&quot;">Body 2</p>
-							<input type="checkbox" id="body2-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
-						</div>
-					</td>
-					<td class="label-td">
-						<div class="header-td">
-							<p class="table-label table-header" title="Typically used for highlights, accent objects, and some hairs; sometimes referred to as &quot;Tertiary&quot;">Special</p>
-							<input type="checkbox" id="special-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
-						</div>
-					</td>
-					<td class="label-td">
-						<div class="header-td">
-							<p class="table-label table-header" title="Mostly used for cloth- and leather-like materials, especially trousers and undergarments">Cloth</p>
-							<input type="checkbox" id="cloth-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
-						</div>
-					</td>
-					<td class="label-td">
-						<div class="header-td">
-							<p class="table-label table-header" title="Mostly used for metallic materials; often referred to as &quot;Metal&quot;">Weapon</p>
-							<input type="checkbox" id="weapon-checkbox" class="autolock" title="Auto-effect lock: disables Load, Randomise, and Auto Shade for this colour component">
-						</div>
-					</td>
-				<tr class="VL-tr">
-					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±6°, Saturation &lt; 25%, Brightness &gt; 80%">Very Light</p></td>
-					<td></td>
-					<td class="Body1VL_Swap"><input type="color" id="color-input"></td>
-					<td class="Body2VL_Swap"><input type="color" id="color-input"></td>
-					<td class="SpecialVL_Swap"><input type="color" id="color-input"></td>
-					<td class="ClothVL_Swap"><input type="color" id="color-input"></td>
-					<td class="WeaponVL_Swap"><input type="color" id="color-input"></td>
-				</tr>
-				<tr class="Lt-tr">
-					<td class="label-td"><p class="table-label" title="Recommended values: 15% &lt; Hue Offset ±3°, Saturation &lt; 67%, Brightness &gt; 50%">Light</p></td>
-					<td class="HairLt_Swap"><input type="color" id="color-input"></td>
-					<td class="Body1Lt_Swap"><input type="color" id="color-input"></td>
-					<td class="Body2Lt_Swap"><input type="color" id="color-input"></td>
-					<td class="SpecialLt_Swap"><input type="color" id="color-input"></td>
-					<td class="ClothLt_Swap"><input type="color" id="color-input"></td>
-					<td class="WeaponLt_Swap"><input type="color" id="color-input"></td>
-				</tr>
-				<tr class="Base-tr">
-					<td class="label-td"><p class="table-label" title="Recommended values: Saturation &gt; 25%, Brightness &gt; 20%">Base</p></td>
-					<td class="Hair_Swap"><input type="color" id="color-input"></td>
-					<td class="Body1_Swap"><input type="color" id="color-input"></td>
-					<td class="Body2_Swap"><input type="color" id="color-input"></td>
-					<td class="Special_Swap"><input type="color" id="color-input"></td>
-					<td class="Cloth_Swap"><input type="color" id="color-input"></td>
-					<td class="Weapon_Swap"><input type="color" id="color-input"></td>
-				</tr>
-				<tr class="Dk-tr">
-					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±3°, Saturation &gt; 30%, Brightness &lt; 60%">Dark</p></td>
-					<td class="HairDk_Swap"><input type="color" id="color-input"></td>
-					<td class="Body1Dk_Swap"><input type="color" id="color-input"></td>
-					<td class="Body2Dk_Swap"><input type="color" id="color-input"></td>
-					<td class="SpecialDk_Swap"><input type="color" id="color-input"></td>
-					<td class="ClothDk_Swap"><input type="color" id="color-input"></td>
-					<td class="WeaponDk_Swap"><input type="color" id="color-input"></td>
-				</tr>
-				<tr class="VD-tr">
-					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±6°, Saturation &gt; 50%, Brightness &lt; 40%">Very Dark</p></td>
-					<td></td>
-					<td class="Body1VD_Swap"><input type="color" id="color-input"></td>
-					<td class="Body2VD_Swap"><input type="color" id="color-input"></td>
-					<td class="SpecialVD_Swap"><input type="color" id="color-input"></td>
-					<td></td>
-					<td></td>
-				</tr>
-				<tr class="Acc-tr">
-					<td class="label-td"><p class="table-label" title="Recommended values: Hue Offset ±&lt;30°, Saturation &gt; 80%, Brightness &gt; 50%">Accent</p></td>
-					<td></td>
-					<td class="Body1Acc_Swap"><input type="color" id="color-input"></td>
-					<td class="Body2Acc_Swap"><input type="color" id="color-input"></td>
-					<td class="SpecialAcc_Swap"><input type="color" id="color-input"></td>
-					<td></td>
-					<td class="WeaponAcc_Swap"><input type="color" id="color-input"></td>
-				</tr>
-			</table>
-		</div>
-		<div class="xml-area">
-			<div class="button-list">
-				<select id="game-select-dropdown" title="Load a built-in game Colour Scheme.  Make sure to click the load button after selecting a Colour Scheme"></select>
-				<select id="format-select" title="Choose output/input format">
-					<option value="xml">XML</option>
-					<option value="wcolor">WColor</option>
-				</select>
-				<button id="load-button" class="load-button" title="Load input into colour grid">Load</button>
-				<button id="randomise-button" title="Randomise all colours">Randomise</button>
-				<button id="shade-button" title="Automatically calculate all shades based on the Base shade">Auto Shade</button>
-			</div>
-			<div class="button-list">
-				<select id="saved-select-dropdown" title="Load a saved custom Colour Scheme.  Make sure to click the load button after selecting a Colour Scheme"></select>
-				<button id="save-button" class="save-button" title="Generate XML and save Colour Scheme">Save</button>
-				<button id="delete-button" class="delete-button" title="Delete selected Colour Scheme">Delete</button>
-				<button id="generate-button" title="Generate output based on current colour grid">Generate</button>
-			</div>
-			<textarea spellcheck="false" id="xml-input" class="xml-editor"></textarea>
-			<div class="button-list">
-				<p id="message" class="message"></p>
-				<button id="share-button" title="Generate XML and copy permalink to this Colour Scheme">Share</button>
-				<button id="copy-button" title="Copy to clipboard">Copy</button>
-				<button id="save-file-button" class="save-file-button" title="Save as file">Save File</button>
-			</div>
-		</div>
-	</div>
-	<script src="script.js"></script>
+
+  <!-- ======== Header ======== -->
+  <header class="header">
+    <div class="header-logo">
+      <img src="favicon.png" alt="" class="header-logo-img" width="24" height="24">
+      <span class="header-title">ColourGuyElf <span class="header-title-thin">Online</span></span>
+    </div>
+    <button id="btn-theme" class="btn btn-icon-only" type="button" title="Toggle theme"></button>
+  </header>
+
+  <!-- ======== Toolbar ======== -->
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <div id="game-dd"></div>
+      <div id="saved-dd"></div>
+      <button id="btn-save" class="btn" type="button" title="Save to browser"><span class="btn-icon"></span><span class="btn-label">Save</span></button>
+      <button id="btn-delete" class="btn btn-danger" type="button" title="Delete saved scheme"><span class="btn-icon"></span><span class="btn-label">Delete</span></button>
+    </div>
+    <div class="toolbar-sep"></div>
+    <div class="toolbar-group">
+      <button id="btn-load" class="btn" type="button" title="Load from editor"><span class="btn-icon"></span><span class="btn-label">Load</span></button>
+      <button id="btn-format" class="btn btn-format-fixed" type="button" title="Toggle format"><span class="btn-icon"></span><span class="btn-label">XML</span></button>
+      <button id="btn-generate" class="btn" type="button" title="Generate to editor"><span class="btn-icon"></span><span class="btn-label">Generate</span></button>
+    </div>
+    <div class="toolbar-sep"></div>
+    <div class="toolbar-group">
+      <button id="btn-randomise" class="btn" type="button" title="Randomise colours"><span class="btn-icon"></span><span class="btn-label">Randomise</span></button>
+      <button id="btn-shade" class="btn" type="button" title="Auto shade from base colours"><span class="btn-icon"></span><span class="btn-label">Auto Shade</span></button>
+      <button id="btn-invert" class="btn" type="button" title="Invert all colours"><span class="btn-icon"></span><span class="btn-label">Invert</span></button>
+      <button id="btn-hueshift" class="btn" type="button" title="Shift hue +30°"><span class="btn-icon"></span><span class="btn-label">Hue Shift</span></button>
+      <button id="btn-desat" class="btn" type="button" title="Desaturate to greyscale"><span class="btn-icon"></span><span class="btn-label">Greyscale</span></button>
+      <button id="btn-posterize" class="btn" type="button" title="Posterize (4 levels)"><span class="btn-icon"></span><span class="btn-label">Posterize</span></button>
+      <button id="btn-shuffle" class="btn" type="button" title="Rotate channels R→G→B"><span class="btn-icon"></span><span class="btn-label">Shuffle</span></button>
+      <button id="btn-harmonize" class="btn" type="button" title="Harmonize all hues"><span class="btn-icon"></span><span class="btn-label">Harmonize</span></button>
+    </div>
+  </div>
+
+  <!-- ======== Main 3-column layout ======== -->
+  <main class="app-main">
+
+    <!-- Left: Colour Picker -->
+    <aside class="panel panel-picker">
+      <h2 class="panel-title">Colour Picker</h2>
+      <div id="picker-panel"></div>
+    </aside>
+
+    <!-- Centre: Colour Grid (hero) -->
+    <section class="panel panel-grid">
+      <div id="grid-panel"></div>
+    </section>
+
+    <!-- Right: Code Editor -->
+    <aside class="panel panel-editor">
+      <h2 class="panel-title">Code Editor</h2>
+      <div class="editor-wrap">
+        <textarea id="editor-textarea"></textarea>
+      </div>
+      <div class="editor-actions">
+        <button id="btn-share" class="btn btn-sm" type="button" title="Copy share link"><span class="btn-icon"></span><span class="btn-label">Share</span></button>
+        <button id="btn-copy" class="btn btn-sm" type="button" title="Copy code"><span class="btn-icon"></span><span class="btn-label">Copy</span></button>
+        <button id="btn-download" class="btn btn-sm" type="button" title="Download file"><span class="btn-icon"></span><span class="btn-label">Download</span></button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ======== Save Modal ======== -->
+  <div id="save-modal" class="modal-overlay">
+    <div id="save-modal-backdrop" class="modal-backdrop"></div>
+    <div class="modal">
+      <h3 class="modal-title">Save Colour Scheme</h3>
+      <input id="save-name-input" type="text" class="modal-input" placeholder="Scheme name…" maxlength="60">
+      <div class="modal-actions">
+        <button id="save-cancel" class="btn btn-sm" type="button">Cancel</button>
+        <button id="save-confirm" class="btn btn-sm btn-primary" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- App module -->
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
