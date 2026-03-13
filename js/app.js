@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     'btn-save': 'save', 'btn-delete': 'trash',
     'btn-load': 'load', 'btn-format': 'format', 'btn-generate': 'generate',
     'btn-randomise': 'dice', 'btn-swap': 'randomise', 'btn-shade': 'shade', 'btn-gradient': 'gradient',
-    'btn-share': 'share', 'btn-copy': 'copy', 'btn-download': 'download',
+    'btn-genimg': 'image', 'btn-share': 'share', 'btn-copy': 'copy', 'btn-download': 'download',
     'btn-invert': 'invert', 'btn-hueshift': 'hueShift', 'btn-desat': 'desat',
     'btn-posterise': 'posterise', 'btn-shuffle': 'shuffle', 'btn-harmonise': 'harmonise',
   };
@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   bind('btn-harmonise', effectHarmonise);
   bind('btn-save',      openSaveModal);
   bind('btn-delete',    deleteSaved);
+  bind('btn-genimg',    openImageModal);
   bind('btn-share',     share);
   bind('btn-copy',      copyEditor);
   bind('btn-download',  downloadFile);
@@ -149,6 +150,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('save-cancel').addEventListener('click', closeSaveModal);
   document.getElementById('save-confirm').addEventListener('click', confirmSave);
   document.getElementById('save-modal-backdrop').addEventListener('click', closeSaveModal);
+
+  /* Image modal */
+  document.getElementById('image-close').addEventListener('click', closeImageModal);
+  document.getElementById('image-copy').addEventListener('click', copyImagePNG);
+  document.getElementById('image-modal-backdrop').addEventListener('click', closeImageModal);
 
   /* Load data */
   await loadGameSchemes();
@@ -786,6 +792,107 @@ function openSaveModal() {
 
 function closeSaveModal() {
   document.getElementById('save-modal').classList.remove('open');
+}
+
+function openImageModal() {
+  const modal = document.getElementById('image-modal');
+  renderSchemeImage();
+  modal.classList.add('open');
+}
+
+function closeImageModal() {
+  document.getElementById('image-modal').classList.remove('open');
+}
+
+function _roundedRect(ctx, x, y, w, h, r) {
+  const rr = Math.min(r, w / 2, h / 2);
+  ctx.beginPath();
+  ctx.moveTo(x + rr, y);
+  ctx.arcTo(x + w, y, x + w, y + h, rr);
+  ctx.arcTo(x + w, y + h, x, y + h, rr);
+  ctx.arcTo(x, y + h, x, y, rr);
+  ctx.arcTo(x, y, x + w, y, rr);
+  ctx.closePath();
+}
+
+function renderSchemeImage() {
+  const canvas = document.getElementById('image-preview-canvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width;
+  const H = canvas.height;
+
+  const bg = ctx.createLinearGradient(0, 0, W, H);
+  bg.addColorStop(0, '#070e1b');
+  bg.addColorStop(1, '#081427');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.fillStyle = '#0a1324';
+  _roundedRect(ctx, 26, 22, W - 52, H - 44, 20);
+  ctx.fill();
+
+  const cols = GRID_COLUMNS.length;
+  const rows = GRID_ROWS.length;
+  const gap = 8;
+  const padding = 52;
+  const availW = W - padding * 2;
+  const availH = H - padding * 2;
+  const cell = Math.floor(Math.min(
+    (availW - (cols - 1) * gap) / cols,
+    (availH - (rows - 1) * gap) / rows,
+  ));
+  const gridW = cell * cols + (cols - 1) * gap;
+  const gridH = cell * rows + (rows - 1) * gap;
+  const left = Math.floor((W - gridW) / 2);
+  const top = Math.floor((H - gridH) / 2);
+
+  for (let r = 0; r < rows; r++) {
+    const row = GRID_ROWS[r];
+    const y = top + r * (cell + gap);
+    for (let c = 0; c < cols; c++) {
+      const col = GRID_COLUMNS[c];
+      const x = left + c * (cell + gap);
+      const p = propName(col.id, row.suffix);
+
+      if (GRID_CELLS[col.id].has(row.suffix)) {
+        ctx.fillStyle = intToHex(scheme[p]);
+        _roundedRect(ctx, x, y, cell, cell, 12);
+        ctx.fill();
+      } else {
+        ctx.fillStyle = 'rgba(7,16,34,.95)';
+        _roundedRect(ctx, x, y, cell, cell, 12);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(75, 112, 136, .35)';
+        ctx.lineWidth = 1.5;
+        _roundedRect(ctx, x + 0.75, y + 0.75, cell - 1.5, cell - 1.5, 11);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+async function copyImagePNG() {
+  const canvas = document.getElementById('image-preview-canvas');
+  if (!canvas) return;
+  try {
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    if (!blob) throw new Error('Failed to create PNG');
+
+    if (window.ClipboardItem && navigator.clipboard?.write) {
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+      showToast('PNG copied to clipboard', 'info');
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ColourScheme.png';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('Clipboard unsupported — PNG downloaded instead', 'info');
+  } catch (e) {
+    showToast('Failed to copy PNG', 'error');
+  }
 }
 
 function confirmSave() {

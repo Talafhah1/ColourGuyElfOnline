@@ -1015,6 +1015,41 @@ button { cursor: pointer; }
   gap: 0.5rem;
 }
 
+.image-modal-card {
+  width: min(980px, 94vw);
+  min-width: 0;
+  max-height: min(92vh, 860px);
+  display: flex;
+  flex-direction: column;
+}
+
+.image-preview-wrap {
+  margin: 0.5rem 0 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-input);
+  flex: 1;
+  min-height: 0;
+  max-height: 72vh;
+}
+
+#image-preview-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 680px) {
+  .image-modal-card {
+    width: 96vw;
+    padding: 0.75rem;
+  }
+  .image-preview-wrap {
+    max-height: 64vh;
+  }
+}
+
 /* ---- Toast notifications ------------------------------------------- */
 
 .toast-container {

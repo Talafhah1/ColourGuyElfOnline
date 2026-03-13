@@ -87,12 +87,28 @@
         <textarea id="editor-textarea"></textarea>
       </div>
       <div class="editor-actions">
+        <button id="btn-genimg" class="btn btn-sm" type="button" title="Generate share image"><span class="btn-icon"></span><span class="btn-label">Image</span></button>
         <button id="btn-share" class="btn btn-sm" type="button" title="Copy share link"><span class="btn-icon"></span><span class="btn-label">Share</span></button>
         <button id="btn-copy" class="btn btn-sm" type="button" title="Copy code"><span class="btn-icon"></span><span class="btn-label">Copy</span></button>
         <button id="btn-download" class="btn btn-sm" type="button" title="Download file"><span class="btn-icon"></span><span class="btn-label">Download</span></button>
       </div>
     </aside>
   </main>
+
+  <!-- ======== Image Modal ======== -->
+  <div id="image-modal" class="modal-overlay">
+    <div id="image-modal-backdrop" class="modal-backdrop"></div>
+    <div class="modal image-modal-card">
+      <h3 class="modal-title">Generated Colour Scheme Image</h3>
+      <div class="image-preview-wrap">
+        <canvas id="image-preview-canvas" width="1200" height="675" aria-label="Generated colour scheme image preview"></canvas>
+      </div>
+      <div class="modal-actions">
+        <button id="image-close" class="btn btn-sm" type="button">Close</button>
+        <button id="image-copy" class="btn btn-sm btn-primary" type="button">Copy PNG</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ======== Save Modal ======== -->
   <div id="save-modal" class="modal-overlay">
