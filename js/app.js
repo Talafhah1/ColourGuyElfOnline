@@ -22,6 +22,7 @@ const LS_PREFIX = 'colour_scheme_';
 const HISTORY_MAX_PAST = 100;
 const HISTORY_MAX_STATES = HISTORY_MAX_PAST + 1;
 const HISTORY_DEBOUNCE_MS = 140;
+const SWAP_SHADE_ORDER = ['VL', 'Lt', '', 'Dk', 'VD', 'Acc'];
 
 let theme   = localStorage.getItem('theme') || 'dark';
 let format  = 'xml';
@@ -34,6 +35,7 @@ let historyStripEl, undoBtn, redoBtn;
 let historyStates = [];
 let historyIndex = -1;
 let historyDebounceTimer = 0;
+let swapSelectionFirstCol = null;
 
 /* ---- Init ---------------------------------------------------------- */
 
@@ -56,6 +58,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* Wire components */
   grid.onSelect((prop) => {
+    _handleSwapSelection(getColumnFromProp(prop));
     picker.setColor(scheme[prop], { updateOld: true });
   });
 
@@ -86,7 +89,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     'btn-undo': 'undo', 'btn-redo': 'redo',
     'btn-save': 'save', 'btn-delete': 'trash',
     'btn-load': 'load', 'btn-format': 'format', 'btn-generate': 'generate',
-    'btn-randomise': 'randomise', 'btn-shade': 'shade', 'btn-gradient': 'gradient',
+    'btn-randomise': 'dice', 'btn-swap': 'randomise', 'btn-shade': 'shade', 'btn-gradient': 'gradient',
     'btn-share': 'share', 'btn-copy': 'copy', 'btn-download': 'download',
     'btn-invert': 'invert', 'btn-hueshift': 'hueShift', 'btn-desat': 'desat',
     'btn-posterise': 'posterise', 'btn-shuffle': 'shuffle', 'btn-harmonise': 'harmonise',
@@ -100,6 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   bind('btn-load',      loadFromEditor);
   bind('btn-generate',  generateToEditor);
   bind('btn-randomise', randomise);
+  bind('btn-swap',      beginComponentSwap);
   bind('btn-shade',     autoShade);
   bind('btn-gradient',  effectGradient);
   bind('btn-invert',    effectInvert);
@@ -150,6 +154,111 @@ document.addEventListener('DOMContentLoaded', async () => {
 function bind(id, fn) {
   const node = document.getElementById(id);
   if (node) node.addEventListener('click', fn);
+}
+
+function _columnLabel(colId) {
+  return GRID_COLUMNS.find(c => c.id === colId)?.label || colId;
+}
+
+function _setSwapButtonState(active) {
+  const btn = document.getElementById('btn-swap');
+  if (!btn) return;
+  btn.classList.toggle('btn-primary', active);
+}
+
+function beginComponentSwap() {
+  if (swapSelectionFirstCol) {
+    swapSelectionFirstCol = null;
+    _setSwapButtonState(false);
+    showToast('Component swap cancelled', 'info');
+    return;
+  }
+  swapSelectionFirstCol = '__pending__';
+  _setSwapButtonState(true);
+  showToast('Swap mode: click a colour in the first component', 'info');
+}
+
+function _captureComponent(colId) {
+  const out = {};
+  for (const shade of SWAP_SHADE_ORDER) {
+    if (!GRID_CELLS[colId].has(shade)) continue;
+    out[shade] = scheme[propName(colId, shade)];
+  }
+  return out;
+}
+
+function _mapComponentSnapshotToColumn(snapshot, sourceCol, targetCol) {
+  const srcShades = SWAP_SHADE_ORDER.filter(s => GRID_CELLS[sourceCol].has(s));
+  const dstShades = SWAP_SHADE_ORDER.filter(s => GRID_CELLS[targetCol].has(s));
+  const mapped = {};
+  if (srcShades.length === 0 || dstShades.length === 0) return mapped;
+
+  const has = (shade) => Object.prototype.hasOwnProperty.call(snapshot, shade);
+  const set = (shade, val) => { mapped[propName(targetCol, shade)] = val; };
+
+  /* 1) Copy direct same-shade values first (no remap noise). */
+  for (const shade of dstShades) {
+    if (has(shade)) set(shade, snapshot[shade]);
+  }
+
+  /* 2) If source is bigger/equal than target, we are done (truncate extras). */
+  if (srcShades.length >= dstShades.length) return mapped;
+
+  /* 3) Source is smaller: expand with autoshade-style derivations. */
+  if (dstShades.includes('VL') && !has('VL') && has('Lt')) {
+    set('VL', shadeColour(snapshot.Lt, 1));
+  }
+  if (dstShades.includes('VD') && !has('VD') && has('Dk')) {
+    set('VD', shadeColour(snapshot.Dk, -1));
+  }
+
+  /* Always generate accent from base for small -> big, per request. */
+  if (dstShades.includes('Acc')) {
+    const base = has('') ? snapshot[''] : null;
+    if (base != null) set('Acc', shadeColour(base, SHADE_MAP.Acc));
+  }
+
+  return mapped;
+}
+
+function _swapComponents(colA, colB) {
+  if (colA === colB) return;
+  const locked = grid.getLockedColumns();
+  if (locked.has(colA) || locked.has(colB)) {
+    showToast('Unlock both components before swapping', 'error');
+    return;
+  }
+
+  const aSnap = _captureComponent(colA);
+  const bSnap = _captureComponent(colB);
+  const bToA = _mapComponentSnapshotToColumn(bSnap, colB, colA);
+  const aToB = _mapComponentSnapshotToColumn(aSnap, colA, colB);
+
+  for (const [p, v] of Object.entries(bToA)) scheme[p] = v;
+  for (const [p, v] of Object.entries(aToB)) scheme[p] = v;
+
+  refreshAll({ recordHistory: true });
+  showToast(`Swapped ${_columnLabel(colA)} ↔ ${_columnLabel(colB)}`, 'info');
+}
+
+function _handleSwapSelection(colId) {
+  if (!swapSelectionFirstCol) return;
+
+  if (swapSelectionFirstCol === '__pending__') {
+    swapSelectionFirstCol = colId;
+    showToast(`First selected: ${_columnLabel(colId)}. Now click the second component.`, 'info');
+    return;
+  }
+
+  if (swapSelectionFirstCol === colId) {
+    showToast('Pick a different second component', 'error');
+    return;
+  }
+
+  const first = swapSelectionFirstCol;
+  swapSelectionFirstCol = null;
+  _setSwapButtonState(false);
+  _swapComponents(first, colId);
 }
 
 function initHistoryUI() {
