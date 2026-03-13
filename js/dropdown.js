@@ -16,6 +16,7 @@ export class Dropdown {
     this._container = container;
     this._placeholder = opts.placeholder || 'Select…';
     this._searchable = opts.searchable ?? false;
+    this._defaultIconHtml = opts.defaultIconHtml || '';
     this._onChange = opts.onChange || null;
     this._open = false;
     this._value = null;
@@ -31,11 +32,11 @@ export class Dropdown {
   /* ---- Public API -------------------------------------------------- */
 
   setItems(groups) {
-    // groups = [{label: string, items: [{value, label}]}]
+    // groups = [{label: string, items: [{value, label, iconHtml?}]}]
     this._items = [];
     for (const g of groups) {
       for (const it of g.items) {
-        this._items.push({ value: it.value, label: it.label, group: g.label });
+        this._items.push({ value: it.value, label: it.label, iconHtml: it.iconHtml || '', group: g.label });
       }
     }
     this._filtered = this._items;
@@ -46,6 +47,8 @@ export class Dropdown {
     const item = this._items.find(i => i.value === val);
     this._value = val;
     this._btnText.textContent = item ? item.label : this._placeholder;
+    this._btnIcon.innerHTML = item?.iconHtml || this._defaultIconHtml || '';
+    this._btnIcon.classList.toggle('has-icon', !!(item?.iconHtml || this._defaultIconHtml));
     this._highlightActive();
   }
 
@@ -54,6 +57,8 @@ export class Dropdown {
   reset() {
     this._value = null;
     this._btnText.textContent = this._placeholder;
+    this._btnIcon.innerHTML = this._defaultIconHtml || '';
+    this._btnIcon.classList.toggle('has-icon', !!this._defaultIconHtml);
     this._highlightActive();
   }
 
@@ -93,9 +98,12 @@ export class Dropdown {
 
     /* Trigger button */
     this._btn = el('button', { className: 'dropdown-btn', type: 'button' });
+    this._btnIcon = el('span', { className: 'dropdown-btn-icon' });
+    this._btnIcon.innerHTML = this._defaultIconHtml || '';
+    this._btnIcon.classList.toggle('has-icon', !!this._defaultIconHtml);
     this._btnText = el('span', { className: 'dropdown-btn-text', textContent: this._placeholder });
     const arrow = el('span', { className: 'dropdown-arrow', innerHTML: ICONS.chevron });
-    this._btn.append(this._btnText, arrow);
+    this._btn.append(this._btnIcon, this._btnText, arrow);
     this._btn.addEventListener('click', () => this.toggle());
 
     /* Menu panel */
@@ -134,9 +142,16 @@ export class Dropdown {
       const btn = el('button', {
         className: 'dropdown-item' + (item.value === this._value ? ' active' : '') + (isDisabled ? ' disabled' : ''),
         type: 'button',
-        textContent: item.label,
         dataset: { value: item.value },
       });
+
+      const content = el('span', { className: 'dropdown-item-content' });
+      if (item.iconHtml) {
+        content.appendChild(el('span', { className: 'dropdown-item-icon', innerHTML: item.iconHtml }));
+      }
+      content.appendChild(el('span', { className: 'dropdown-item-label', textContent: item.label }));
+      btn.appendChild(content);
+
       if (isDisabled) {
         btn.style.opacity = '0.45';
         btn.style.pointerEvents = 'none';
@@ -150,6 +165,8 @@ export class Dropdown {
   _select(item) {
     this._value = item.value;
     this._btnText.textContent = item.label;
+    this._btnIcon.innerHTML = item.iconHtml || this._defaultIconHtml || '';
+    this._btnIcon.classList.toggle('has-icon', !!(item.iconHtml || this._defaultIconHtml));
     this.close();
     if (this._onChange) this._onChange(item.value, item);
   }

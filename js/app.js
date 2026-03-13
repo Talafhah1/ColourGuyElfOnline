@@ -37,6 +37,15 @@ let historyIndex = -1;
 let historyDebounceTimer = 0;
 let swapSelectionFirstCol = null;
 
+const DEFAULT_DROPDOWN_ICON = '<span class="history-mini">'
+  + '<span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span>'
+  + '<span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span>'
+  + '<span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#1E2A3D"></span><span class="history-mini-cell" style="background-color:#1E2A3D"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span>'
+  + '<span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#1E2A3D"></span><span class="history-mini-cell" style="background-color:#1E2A3D"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span>'
+  + '<span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#4D95A8"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span>'
+  + '<span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span><span class="history-mini-cell" style="background-color:#7AC7D9"></span>'
+  + '</span>';
+
 /* ---- Init ---------------------------------------------------------- */
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -50,10 +59,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   gameDD  = new Dropdown(document.getElementById('game-dd'), {
     placeholder: 'Game Colour Schemes',
     searchable: true,
+    defaultIconHtml: DEFAULT_DROPDOWN_ICON,
   });
   savedDD = new Dropdown(document.getElementById('saved-dd'), {
     placeholder: 'Saved Schemes',
     searchable: false,
+    defaultIconHtml: DEFAULT_DROPDOWN_ICON,
   });
 
   /* Wire components */
@@ -66,6 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const prop = grid.getActiveProp();
     if (!prop) return;
     scheme[prop] = hexInt;
+    clearSchemeSelections();
     refreshAll({ recordHistory: true, debounceHistory: true });
   });
 
@@ -76,6 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     for (const p of COLOR_PROPS) {
       if (!locked.has(getColumnFromProp(p))) scheme[p] = gs[p];
     }
+    savedDD.reset();
     refreshAll({ recordHistory: true });
     showToast(`Loaded "${item.label}"`, 'info');
   });
@@ -156,6 +169,11 @@ function bind(id, fn) {
   if (node) node.addEventListener('click', fn);
 }
 
+function clearSchemeSelections() {
+  gameDD.reset();
+  savedDD.reset();
+}
+
 function _columnLabel(colId) {
   return GRID_COLUMNS.find(c => c.id === colId)?.label || colId;
 }
@@ -223,6 +241,7 @@ function _mapComponentSnapshotToColumn(snapshot, sourceCol, targetCol) {
 
 function _swapComponents(colA, colB) {
   if (colA === colB) return;
+  clearSchemeSelections();
   const locked = grid.getLockedColumns();
   if (locked.has(colA) || locked.has(colB)) {
     showToast('Unlock both components before swapping', 'error');
@@ -271,7 +290,22 @@ function initHistoryUI() {
 function _colorFromHexState(hex, prop) {
   const idx = COLOR_PROPS.indexOf(prop);
   if (idx === -1) return '#000000';
-  return '#' + hex.slice(idx * 6, idx * 6 + 6);
+  const v = (hex || '').slice(idx * 6, idx * 6 + 6);
+  return /^[0-9A-Fa-f]{6}$/.test(v) ? ('#' + v) : '#000000';
+}
+
+function _miniGridHtmlFromHex(hex) {
+  const cells = [];
+  for (const row of GRID_ROWS) {
+    for (const col of GRID_COLUMNS) {
+      if (GRID_CELLS[col.id].has(row.suffix)) {
+        cells.push(`<span class="history-mini-cell" style="background-color:${_colorFromHexState(hex, propName(col.id, row.suffix))}"></span>`);
+      } else {
+        cells.push('<span class="history-mini-cell empty"></span>');
+      }
+    }
+  }
+  return `<span class="history-mini">${cells.join('')}</span>`;
 }
 
 function _buildHistoryMiniGrid(hex) {
@@ -455,6 +489,7 @@ async function loadGameSchemes() {
     const mapItems = (arr) => arr.map(gs => ({
       value: gs.DisplayNameKey,
       label: stringTable[gs.DisplayNameKey] || gs.DisplayNameKey.replace(/ColorSchemeType_|_DisplayName/g, ' ').trim(),
+      iconHtml: _miniGridHtmlFromHex(gs.toHexString()),
     }));
     gameDD.setItems([
       { label: 'Standard Colour Schemes', items: mapItems(standard) },
@@ -475,6 +510,7 @@ function loadFromEditor() {
     const locked = grid.getLockedColumns();
     if (text.startsWith('<')) scheme.loadXML(text, locked);
     else scheme.loadINI(text, locked);
+    clearSchemeSelections();
     refreshAll({ recordHistory: true });
     showToast('Loaded from editor', 'info');
   } catch (e) {
@@ -487,6 +523,7 @@ function generateToEditor() {
 }
 
 function randomise() {
+  clearSchemeSelections();
   const locked = grid.getLockedColumns();
   for (const col of GRID_COLUMNS) {
     if (locked.has(col.id)) continue;
@@ -503,6 +540,7 @@ function randomise() {
 }
 
 function autoShade() {
+  clearSchemeSelections();
   const locked = grid.getLockedColumns();
   for (const col of GRID_COLUMNS) {
     if (locked.has(col.id)) continue;
@@ -520,6 +558,7 @@ function autoShade() {
 
 /** Apply a per-cell transform fn(colour) → colour, respecting locks */
 function _applyEffect(fn, label) {
+  clearSchemeSelections();
   const locked = grid.getLockedColumns();
   for (const p of COLOR_PROPS) {
     if (locked.has(getColumnFromProp(p))) continue;
@@ -530,6 +569,7 @@ function _applyEffect(fn, label) {
 }
 
 function effectGradient() {
+  clearSchemeSelections();
   const locked = grid.getLockedColumns();
   const orderedShades = ['VL', 'Lt', '', 'Dk', 'VD'];
 
@@ -572,6 +612,7 @@ function effectGradient() {
 }
 
 function effectInvert() {
+  clearSchemeSelections();
   const locked = grid.getLockedColumns();
   const next = {};
 
@@ -681,6 +722,7 @@ function loadFromURL() {
   try {
     const hex = atob(decodeURIComponent(b64));
     scheme.loadHexString(hex);
+    clearSchemeSelections();
     refreshAll({ recordHistory: true });
     showToast('Loaded from shared link', 'info');
   } catch (e) {
@@ -697,6 +739,7 @@ function refreshSavedList() {
     if (key.startsWith(LS_PREFIX)) items.push({
       value: key.slice(LS_PREFIX.length),
       label: key.slice(LS_PREFIX.length),
+      iconHtml: _miniGridHtmlFromHex(localStorage.getItem(key) || ''),
     });
   }
   items.sort((a, b) => a.label.localeCompare(b.label));
@@ -714,6 +757,7 @@ function loadFromStorage(name) {
     const data = localStorage.getItem(LS_PREFIX + name);
     if (!data) return showToast('Not found', 'error');
     scheme.loadHexString(data);
+    gameDD.reset();
     refreshAll({ recordHistory: true });
     showToast(`Loaded "${name}"`, 'info');
   } catch (e) {
