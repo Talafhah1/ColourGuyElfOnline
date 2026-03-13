@@ -7,7 +7,7 @@ import {
   GRID_COLUMNS, GRID_CELLS, SHADE_MAP, propName, ICONS,
   getColumnFromProp, icon,
   invertColour, hueShiftColour, desaturateColour,
-  posterizeColour, channelShuffleColour, harmonizeColour,
+  posteriseColour, channelShuffleColour, harmoniseColour,
   rgbToHsv,
 } from './utils.js';
 import { ColorSchemeType, GameColorSchemeType, COLOR_PROPS } from './color-scheme.js';
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     'btn-randomise': 'randomise', 'btn-shade': 'shade',
     'btn-share': 'share', 'btn-copy': 'copy', 'btn-download': 'download',
     'btn-invert': 'invert', 'btn-hueshift': 'hueShift', 'btn-desat': 'desat',
-    'btn-posterize': 'posterize', 'btn-shuffle': 'shuffle', 'btn-harmonize': 'harmonize',
+    'btn-posterise': 'posterise', 'btn-shuffle': 'shuffle', 'btn-harmonise': 'harmonise',
   };
   for (const [id, name] of Object.entries(btnIcons)) {
     const span = document.getElementById(id)?.querySelector('.btn-icon');
@@ -97,9 +97,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   bind('btn-invert',    effectInvert);
   bind('btn-hueshift',  effectHueShift);
   bind('btn-desat',     effectDesaturate);
-  bind('btn-posterize', effectPosterize);
+  bind('btn-posterise', effectPosterise);
   bind('btn-shuffle',   effectShuffle);
-  bind('btn-harmonize', effectHarmonize);
+  bind('btn-harmonise', effectHarmonise);
   bind('btn-save',      openSaveModal);
   bind('btn-delete',    deleteSaved);
   bind('btn-share',     share);
@@ -274,7 +274,30 @@ function _applyEffect(fn, label) {
 }
 
 function effectInvert() {
-  _applyEffect(invertColour, 'Inverted colours');
+  const locked = grid.getLockedColumns();
+  const next = {};
+
+  for (const col of GRID_COLUMNS) {
+    if (locked.has(col.id)) continue;
+
+    // Mirror available non-accent shades (supports 3/4/5-shade columns)
+    const shades = ['VL', 'Lt', '', 'Dk', 'VD'].filter(s => GRID_CELLS[col.id].has(s));
+    for (let i = 0; i < shades.length; i++) {
+      const target = propName(col.id, shades[i]);
+      const source = propName(col.id, shades[shades.length - 1 - i]);
+      next[target] = invertColour(scheme[source]);
+    }
+
+    // Keep accent in-place (invert only; no position swap)
+    if (GRID_CELLS[col.id].has('Acc')) {
+      const acc = propName(col.id, 'Acc');
+      next[acc] = invertColour(scheme[acc]);
+    }
+  }
+
+  for (const [p, v] of Object.entries(next)) scheme[p] = v;
+  refreshAll();
+  showToast('Inverted colours', 'info');
 }
 
 function effectHueShift() {
@@ -285,15 +308,15 @@ function effectDesaturate() {
   _applyEffect(desaturateColour, 'Desaturated to greyscale');
 }
 
-function effectPosterize() {
-  _applyEffect(posterizeColour, 'Posterized (4 levels)');
+function effectPosterise() {
+  _applyEffect(posteriseColour, 'Posterised (4 levels)');
 }
 
 function effectShuffle() {
   _applyEffect(channelShuffleColour, 'Channels shuffled R→G→B');
 }
 
-function effectHarmonize() {
+function effectHarmonise() {
   /* Compute average hue of all unlocked base colours */
   const locked = grid.getLockedColumns();
   let sinSum = 0, cosSum = 0, count = 0;
@@ -316,12 +339,12 @@ function effectHarmonize() {
     const colHue = (avgHue + offsets[i % offsets.length] + 360) % 360;
     for (const suffix of GRID_CELLS[col.id]) {
       const p = propName(col.id, suffix);
-      scheme[p] = harmonizeColour(scheme[p], colHue);
+      scheme[p] = harmoniseColour(scheme[p], colHue);
     }
     i++;
   }
   refreshAll();
-  showToast('Harmonized to analogous palette', 'info');
+  showToast('Harmonised to analogous palette', 'info');
 }
 
 function share() {

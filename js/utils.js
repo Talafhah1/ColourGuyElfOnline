@@ -60,9 +60,9 @@ export const ICONS = {
   invert:    `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M8 2v12" /><path d="M8 2a6 6 0 010 12" fill="currentColor"/></svg>`,
   hueShift:  `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="5.5"/><path d="M8 2.5A5.5 5.5 0 0113.5 8"/><path d="M11.5 6l2 2-2 2"/></svg>`,
   desat:     `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M4 12l8-8"/></svg>`,
-  posterize: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14h3V8h3V5h3V2h3v12H2z"/></svg>`,
+  posterise: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 14h3V8h3V5h3V2h3v12H2z"/></svg>`,
   shuffle:   `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4h4l4 8h4"/><path d="M2 12h4l4-8h4"/><path d="M12 2l2 2-2 2"/><path d="M12 10l2 2-2 2"/></svg>`,
-  harmonize: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1v14"/><path d="M3 4c2.8 0 5 2.2 5 5s-2.2 5-5 5"/><path d="M13 4c-2.8 0-5 2.2-5 5s2.2 5 5 5"/></svg>`,
+  harmonise: `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1v14"/><path d="M3 4c2.8 0 5 2.2 5 5s-2.2 5-5 5"/><path d="M13 4c-2.8 0-5 2.2-5 5s2.2 5 5 5"/></svg>`,
 };
 
 /** Create an icon DOM element */
@@ -172,8 +172,8 @@ export function desaturateColour(c) {
   return l === 0 ? BLACK_FALLBACK : (l << 16) | (l << 8) | l;
 }
 
-/** Posterize — snap each channel to nearest step (4 levels) */
-export function posterizeColour(c) {
+/** Posterise — snap each channel to nearest step (4 levels) */
+export function posteriseColour(c) {
   const snap = (v) => Math.round(v / 85) * 85;
   const r = snap((c >> 16) & 0xFF);
   const g = snap((c >> 8) & 0xFF);
@@ -187,8 +187,8 @@ export function channelShuffleColour(c) {
   return (b === 0 && r === 0 && g === 0) ? BLACK_FALLBACK : (b << 16) | (r << 8) | g;
 }
 
-/** Harmonize — lock all base hues to analogous ±30° spread around avg hue */
-export function harmonizeColour(c, targetHue) {
+/** Harmonise — lock all base hues to analogous ±30° spread around avg hue */
+export function harmoniseColour(c, targetHue) {
   const hsv = rgbToHsv((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
   hsv[0] = targetHue;
   const rgb = hsvToRgb(hsv[0], hsv[1], hsv[2]);

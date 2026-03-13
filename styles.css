@@ -833,6 +833,7 @@ button { cursor: pointer; }
   .panel-grid {
     grid-column: 1 / -1;
     grid-row: 1 / 2;
+    min-height: 450px;
   }
   .panel-editor {
     grid-column: 2 / 3;
@@ -853,6 +854,7 @@ button { cursor: pointer; }
   .panel-grid {
     grid-column: 1 / -1;
     grid-row: 1;
+    min-height: 450px;
   }
   .panel-picker {
     grid-column: 1;
