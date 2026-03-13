@@ -8,7 +8,7 @@ import {
   getColumnFromProp, icon,
   invertColour, hueShiftColour, desaturateColour,
   posteriseColour, channelShuffleColour, harmoniseColour,
-  rgbToHsv,
+  rgbToHsv, rgbToLab, labToRgb, BLACK_FALLBACK,
 } from './utils.js';
 import { ColorSchemeType, GameColorSchemeType, COLOR_PROPS } from './color-scheme.js';
 import { ColorPicker } from './color-picker.js';
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const btnIcons = {
     'btn-save': 'save', 'btn-delete': 'trash',
     'btn-load': 'load', 'btn-format': 'format', 'btn-generate': 'generate',
-    'btn-randomise': 'randomise', 'btn-shade': 'shade',
+    'btn-randomise': 'randomise', 'btn-shade': 'shade', 'btn-gradient': 'gradient',
     'btn-share': 'share', 'btn-copy': 'copy', 'btn-download': 'download',
     'btn-invert': 'invert', 'btn-hueshift': 'hueShift', 'btn-desat': 'desat',
     'btn-posterise': 'posterise', 'btn-shuffle': 'shuffle', 'btn-harmonise': 'harmonise',
@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   bind('btn-generate',  generateToEditor);
   bind('btn-randomise', randomise);
   bind('btn-shade',     autoShade);
+  bind('btn-gradient',  effectGradient);
   bind('btn-invert',    effectInvert);
   bind('btn-hueshift',  effectHueShift);
   bind('btn-desat',     effectDesaturate);
@@ -271,6 +272,48 @@ function _applyEffect(fn, label) {
   }
   refreshAll();
   showToast(label, 'info');
+}
+
+function effectGradient() {
+  const locked = grid.getLockedColumns();
+  const orderedShades = ['VL', 'Lt', '', 'Dk', 'VD'];
+
+  const toLab = (c) => rgbToLab((c >> 16) & 0xFF, (c >> 8) & 0xFF, c & 0xFF);
+  const fromLab = (L, a, b) => {
+    const [r, g, bl] = labToRgb(L, a, b);
+    if (r === 0 && g === 0 && bl === 0) return BLACK_FALLBACK;
+    return (r << 16) | (g << 8) | bl;
+  };
+
+  for (const col of GRID_COLUMNS) {
+    if (locked.has(col.id)) continue;
+
+    const shades = orderedShades.filter(s => GRID_CELLS[col.id].has(s));
+    if (shades.length < 2) continue;
+
+    const firstProp = propName(col.id, shades[0]);
+    const lastProp  = propName(col.id, shades[shades.length - 1]);
+    const [L1, a1, b1] = toLab(scheme[firstProp]);
+    const [L2, a2, b2] = toLab(scheme[lastProp]);
+
+    for (let i = 0; i < shades.length; i++) {
+      const t = i / (shades.length - 1);
+      const prop = propName(col.id, shades[i]);
+      const L = L1 + (L2 - L1) * t;
+      const a = a1 + (a2 - a1) * t;
+      const b = b1 + (b2 - b1) * t;
+      scheme[prop] = fromLab(L, a, b);
+    }
+
+    // Accent is regenerated from base like Auto Shade.
+    if (GRID_CELLS[col.id].has('Acc')) {
+      const baseProp = propName(col.id, '');
+      scheme[propName(col.id, 'Acc')] = shadeColour(scheme[baseProp], SHADE_MAP.Acc);
+    }
+  }
+
+  refreshAll();
+  showToast('Applied light→dark gradient', 'info');
 }
 
 function effectInvert() {
