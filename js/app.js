@@ -160,6 +160,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadGameSchemes();
   refreshSavedList();
   loadFromURL();
+  updateShareMetaPreview();
 
   /* Default selection */
   const firstProp = propName(GRID_COLUMNS[0].id, '');
@@ -815,8 +816,9 @@ function _roundedRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 
-function renderSchemeImage() {
-  const canvas = document.getElementById('image-preview-canvas');
+function renderSchemeImage(canvas = null) {
+  canvas = canvas || document.getElementById('image-preview-canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const W = canvas.width;
   const H = canvas.height;
@@ -869,6 +871,32 @@ function renderSchemeImage() {
       }
     }
   }
+}
+
+function updateShareMetaPreview() {
+  const ogUrl = document.getElementById('meta-og-url');
+  if (ogUrl) ogUrl.setAttribute('content', window.location.href);
+
+  const params = new URLSearchParams(window.location.search);
+  const hasShare = !!(params.get('colour') || params.get('color'));
+  if (!hasShare) return;
+
+  const previewCanvas = document.createElement('canvas');
+  previewCanvas.width = 1200;
+  previewCanvas.height = 675;
+  renderSchemeImage(previewCanvas);
+
+  let dataUrl = '';
+  try {
+    dataUrl = previewCanvas.toDataURL('image/png');
+  } catch {
+    return;
+  }
+
+  const ogImage = document.getElementById('meta-og-image');
+  const twImage = document.getElementById('meta-twitter-image');
+  if (ogImage) ogImage.setAttribute('content', dataUrl);
+  if (twImage) twImage.setAttribute('content', dataUrl);
 }
 
 async function copyImagePNG() {
