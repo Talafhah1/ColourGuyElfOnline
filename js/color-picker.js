@@ -28,6 +28,7 @@ export class ColorPicker {
     this._sliderMode = 'hsb';
     this._dragging = null;
     this._sliders = {};
+    this._transformBtns = {};
     this._build();
     this._switchCanvas(this._canvasMode);
     this._switchSliders(this._sliderMode);
@@ -45,10 +46,10 @@ export class ColorPicker {
     return (r << 16) | (g << 8) | b;
   }
 
-  setColor(hexInt) {
+  setColor(hexInt, { updateOld = false } = {}) {
     const r = (hexInt >> 16) & 0xFF, g = (hexInt >> 8) & 0xFF, b = hexInt & 0xFF;
     [this._h, this._s, this._v] = rgbToHsv(r, g, b);
-    this._oldHex = hexInt;
+    if (updateOld) this._oldHex = hexInt;
     this._fullSync();
   }
 
@@ -110,6 +111,78 @@ export class ColorPicker {
     this._hexIn.addEventListener('change', () => this._onHexInput());
     hr.append(hl, this._hexIn);
     this._container.appendChild(hr);
+
+    /* ---- Quick transform section (bottom) ---- */
+    const trTitle = el('div', { className: 'pk-quick-title', textContent: 'Quick Transform' });
+    this._container.appendChild(trTitle);
+
+    const tr = el('div', { className: 'pk-transform' });
+
+    const iconSvg = (name) => {
+      const map = {
+        hMinus: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 8h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        hPlus: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 8h3M6.5 6.5v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        hue: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2v12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        sMinus: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 12l5-8 5 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M5.5 10.5h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        sPlus: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 12l5-8 5 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M5.5 10.5h3M7 9v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>',
+        sat: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 12l5-8 5 8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+        bMinus: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2.2v1.4M8 12.4v1.4M2.2 8h1.4M12.4 8h1.4M4 4l1 1M11 11l1 1M4 12l1-1M11 5l1-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+        bPlus: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2.2v1.4M8 12.4v1.4M2.2 8h1.4M12.4 8h1.4M4 4l1 1M11 11l1 1M4 12l1-1M11 5l1-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M6.6 8h2.8M8 6.6v2.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>',
+        bri: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2.2v1.4M8 12.4v1.4M2.2 8h1.4M12.4 8h1.4M4 4l1 1M11 11l1 1M4 12l1-1M11 5l1-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>',
+        invert: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2v12" stroke="currentColor" stroke-width="1.5"/><path d="M8 2a6 6 0 010 12" fill="currentColor"/></svg>',
+        old: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 7.5A4.5 4.5 0 118 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M3.5 3.5v4h4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        comp: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 2.5v11" stroke="currentColor" stroke-width="1.5"/><circle cx="8" cy="3" r="1.2" fill="currentColor"/><circle cx="8" cy="13" r="1.2" fill="currentColor"/></svg>',
+      };
+      return map[name] || '';
+    };
+
+    const mkAction = (id, iconName, title, fn, cls = '') => {
+      const b = el('button', {
+        className: `pk-tbtn ${cls}`.trim(),
+        type: 'button',
+        title,
+        dataset: { tid: id },
+      });
+      b.appendChild(el('span', { className: 'pk-ticon', innerHTML: iconSvg(iconName) }));
+      b.addEventListener('click', fn);
+      this._transformBtns[id] = b;
+      return b;
+    };
+
+    const mkCurrent = (id, iconName, title) => {
+      const chip = el('div', {
+        className: 'pk-tbtn pk-tbtn-current',
+        title,
+        dataset: { tid: id },
+      });
+      chip.appendChild(el('span', { className: 'pk-ticon', innerHTML: iconSvg(iconName) }));
+      this._transformBtns[id] = chip;
+      return chip;
+    };
+
+    const mkRow = (leftId, leftLabel, leftTip, leftFn, curId, curLabel, curTip, rightId, rightLabel, rightTip, rightFn) => {
+      const row = el('div', { className: 'pk-trow' });
+      row.append(
+        mkAction(leftId, leftLabel, leftTip, leftFn, 'pk-tbtn-action'),
+        mkCurrent(curId, curLabel, curTip),
+        mkAction(rightId, rightLabel, rightTip, rightFn, 'pk-tbtn-action')
+      );
+      tr.appendChild(row);
+    };
+
+    mkRow('h-', 'hMinus', 'Hue -15°', () => this._applyHSVAdjust(-15, 0, 0), 'h-cur', 'hue', 'Current hue', 'h+', 'hPlus', 'Hue +15°', () => this._applyHSVAdjust(15, 0, 0));
+    mkRow('s-', 'sMinus', 'Saturation -20', () => this._applyHSVAdjust(0, -20, 0), 's-cur', 'sat', 'Current saturation', 's+', 'sPlus', 'Saturation +20', () => this._applyHSVAdjust(0, 20, 0));
+    mkRow('b-', 'bMinus', 'Brightness -20', () => this._applyHSVAdjust(0, 0, -20), 'b-cur', 'bri', 'Current brightness', 'b+', 'bPlus', 'Brightness +20', () => this._applyHSVAdjust(0, 0, 20));
+
+    const bottom = el('div', { className: 'pk-trow pk-trow-bottom' });
+    bottom.append(
+      mkAction('inv', 'invert', 'Invert', () => this._applyInvert()),
+      mkAction('old', 'old', 'Restore previous', () => this._restoreOld()),
+      mkAction('cmp', 'comp', 'Complement (Hue +180°)', () => this._applyHSVAdjust(180, 0, 0))
+    );
+    tr.appendChild(bottom);
+
+    this._container.appendChild(tr);
   }
 
   /* ================================================================== */
@@ -622,6 +695,42 @@ export class ColorPicker {
   _syncSwatches() {
     this._newSw.style.backgroundColor = intToHex(this.getColor());
     this._oldSw.style.backgroundColor = intToHex(this._oldHex);
+    this._syncTransforms();
+  }
+
+  _previewTransform(id) {
+    const [r, g, b] = hsvToRgb(this._h, this._s, this._v);
+    if (id === 'h-cur' || id === 's-cur' || id === 'b-cur') return (r << 16) | (g << 8) | b;
+    if (id === 'old') return this._oldHex;
+    if (id === 'inv') return ((255 - r) << 16) | ((255 - g) << 8) | (255 - b);
+
+    let h = this._h, s = this._s, v = this._v;
+    if (id === 'h-') h = (h - 15 + 360) % 360;
+    else if (id === 'h+') h = (h + 15) % 360;
+    else if (id === 's-') s = this._clamp(s - 20, 0, 255);
+    else if (id === 's+') s = this._clamp(s + 20, 0, 255);
+    else if (id === 'b-') v = this._clamp(v - 20, 0, 255);
+    else if (id === 'b+') v = this._clamp(v + 20, 0, 255);
+    else if (id === 'cmp') h = (h + 180) % 360;
+
+    const [tr, tg, tb] = hsvToRgb(h, s, v);
+    return (tr << 16) | (tg << 8) | tb;
+  }
+
+  _transformForeground(col) {
+    const r = (col >> 16) & 0xFF;
+    const g = (col >> 8) & 0xFF;
+    const b = col & 0xFF;
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    return luminance > 0.58 ? '#0d121a' : '#f5f9ff';
+  }
+
+  _syncTransforms() {
+    for (const [id, btn] of Object.entries(this._transformBtns)) {
+      const col = this._previewTransform(id);
+      btn.style.backgroundColor = intToHex(col);
+      btn.style.color = this._transformForeground(col);
+    }
   }
 
   _onHexInput() {
@@ -645,6 +754,26 @@ export class ColorPicker {
     this._syncSliders();
     this._syncHex();
     this._syncSwatches();
+    this._syncTransforms();
+  }
+
+  _applyHSVAdjust(dH, dS, dV) {
+    this._h = (this._h + dH + 360) % 360;
+    this._s = this._clamp(this._s + dS, 0, 255);
+    this._v = this._clamp(this._v + dV, 0, 255);
+    this._afterDrag();
+  }
+
+  _applyInvert() {
+    const [r, g, b] = hsvToRgb(this._h, this._s, this._v);
+    [this._h, this._s, this._v] = rgbToHsv(255 - r, 255 - g, 255 - b);
+    this._afterDrag();
+  }
+
+  _restoreOld() {
+    const n = this._oldHex;
+    [this._h, this._s, this._v] = rgbToHsv((n >> 16) & 0xFF, (n >> 8) & 0xFF, n & 0xFF);
+    this._afterDrag();
   }
 
   /* ================================================================== */

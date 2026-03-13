@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* Wire components */
   grid.onSelect((prop) => {
-    picker.setColor(scheme[prop]);
+    picker.setColor(scheme[prop], { updateOld: true });
   });
 
   picker.onChange((hexInt) => {
