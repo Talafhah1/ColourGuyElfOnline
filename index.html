@@ -68,6 +68,15 @@
     <!-- Centre: Colour Grid (hero) -->
     <section class="panel panel-grid">
       <div id="grid-panel"></div>
+      <div class="grid-history" aria-label="Colour history timeline">
+        <button id="btn-undo" class="btn btn-sm btn-icon-only" type="button" title="Undo" disabled>
+          <span class="btn-icon"></span>
+        </button>
+        <div id="history-strip" class="history-strip" role="list" aria-label="History states"></div>
+        <button id="btn-redo" class="btn btn-sm btn-icon-only" type="button" title="Redo" disabled>
+          <span class="btn-icon"></span>
+        </button>
+      </div>
     </section>
 
     <!-- Right: Code Editor -->

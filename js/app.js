@@ -4,7 +4,7 @@
 
 import {
   showToast, intToHex, shadeColour, randomColour,
-  GRID_COLUMNS, GRID_CELLS, SHADE_MAP, propName, ICONS,
+  GRID_COLUMNS, GRID_ROWS, GRID_CELLS, SHADE_MAP, propName, ICONS,
   getColumnFromProp, icon,
   invertColour, hueShiftColour, desaturateColour,
   posteriseColour, channelShuffleColour, harmoniseColour,
@@ -19,6 +19,9 @@ import { Dropdown } from './dropdown.js';
 /* ====================================================================== */
 
 const LS_PREFIX = 'colour_scheme_';
+const HISTORY_MAX_PAST = 100;
+const HISTORY_MAX_STATES = HISTORY_MAX_PAST + 1;
+const HISTORY_DEBOUNCE_MS = 140;
 
 let theme   = localStorage.getItem('theme') || 'dark';
 let format  = 'xml';
@@ -27,6 +30,10 @@ let gameSchemes = [];           // GameColorSchemeType[]
 let stringTable = {};           // key → display name
 
 let grid, picker, editor, gameDD, savedDD;
+let historyStripEl, undoBtn, redoBtn;
+let historyStates = [];
+let historyIndex = -1;
+let historyDebounceTimer = 0;
 
 /* ---- Init ---------------------------------------------------------- */
 
@@ -56,8 +63,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const prop = grid.getActiveProp();
     if (!prop) return;
     scheme[prop] = hexInt;
-    grid.updateFromScheme(scheme);
-    editor.setValue(format === 'xml' ? scheme.generateXML() : scheme.generateINI());
+    refreshAll({ recordHistory: true, debounceHistory: true });
   });
 
   gameDD.onChange((_, item) => {
@@ -67,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     for (const p of COLOR_PROPS) {
       if (!locked.has(getColumnFromProp(p))) scheme[p] = gs[p];
     }
-    refreshAll();
+    refreshAll({ recordHistory: true });
     showToast(`Loaded "${item.label}"`, 'info');
   });
 
@@ -77,6 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   /* Populate toolbar button icons */
   const btnIcons = {
+    'btn-undo': 'undo', 'btn-redo': 'redo',
     'btn-save': 'save', 'btn-delete': 'trash',
     'btn-load': 'load', 'btn-format': 'format', 'btn-generate': 'generate',
     'btn-randomise': 'randomise', 'btn-shade': 'shade', 'btn-gradient': 'gradient',
@@ -106,7 +113,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   bind('btn-share',     share);
   bind('btn-copy',      copyEditor);
   bind('btn-download',  downloadFile);
+  bind('btn-undo',      undoHistory);
+  bind('btn-redo',      redoHistory);
   bind('btn-theme',     () => applyTheme(theme === 'dark' ? 'light' : 'dark'));
+
+  initHistoryUI();
 
   /* Format dropdown (simple toggle) */
   const fmtBtn = document.getElementById('btn-format');
@@ -130,21 +141,156 @@ document.addEventListener('DOMContentLoaded', async () => {
   /* Default selection */
   const firstProp = propName(GRID_COLUMNS[0].id, '');
   grid.select(firstProp);
-  refreshAll();
+  refreshAll({ recordHistory: true });
   editor.refresh();
 });
 
 /* ---- Helpers ------------------------------------------------------- */
 
 function bind(id, fn) {
-  document.getElementById(id).addEventListener('click', fn);
+  const node = document.getElementById(id);
+  if (node) node.addEventListener('click', fn);
 }
 
-function refreshAll() {
+function initHistoryUI() {
+  historyStripEl = document.getElementById('history-strip');
+  undoBtn = document.getElementById('btn-undo');
+  redoBtn = document.getElementById('btn-redo');
+  updateHistoryControls();
+}
+
+function _colorFromHexState(hex, prop) {
+  const idx = COLOR_PROPS.indexOf(prop);
+  if (idx === -1) return '#000000';
+  return '#' + hex.slice(idx * 6, idx * 6 + 6);
+}
+
+function _buildHistoryMiniGrid(hex) {
+  const mini = document.createElement('div');
+  mini.className = 'history-mini';
+
+  for (const row of GRID_ROWS) {
+    for (const col of GRID_COLUMNS) {
+      const cell = document.createElement('span');
+      cell.className = 'history-mini-cell';
+      if (GRID_CELLS[col.id].has(row.suffix)) {
+        cell.style.backgroundColor = _colorFromHexState(hex, propName(col.id, row.suffix));
+      } else {
+        cell.classList.add('empty');
+      }
+      mini.appendChild(cell);
+    }
+  }
+
+  return mini;
+}
+
+function _clearHistoryDebounce() {
+  if (!historyDebounceTimer) return;
+  clearTimeout(historyDebounceTimer);
+  historyDebounceTimer = 0;
+}
+
+function _pushHistoryDebounced() {
+  _clearHistoryDebounce();
+  historyDebounceTimer = setTimeout(() => {
+    historyDebounceTimer = 0;
+    pushHistoryState();
+  }, HISTORY_DEBOUNCE_MS);
+}
+
+function updateHistoryControls() {
+  if (undoBtn) undoBtn.disabled = historyIndex <= 0;
+  if (redoBtn) redoBtn.disabled = historyIndex < 0 || historyIndex >= historyStates.length - 1;
+}
+
+function renderHistoryTimeline() {
+  if (!historyStripEl) return;
+  historyStripEl.innerHTML = '';
+
+  for (let i = 0; i < historyStates.length; i++) {
+    const stateBtn = document.createElement('button');
+    stateBtn.type = 'button';
+    stateBtn.className = 'history-state' + (i === historyIndex ? ' active' : '');
+    stateBtn.setAttribute('role', 'listitem');
+    stateBtn.title = `State ${i + 1} of ${historyStates.length}`;
+    stateBtn.appendChild(_buildHistoryMiniGrid(historyStates[i]));
+    stateBtn.addEventListener('click', () => setHistoryIndex(i));
+    historyStripEl.appendChild(stateBtn);
+  }
+
+  const active = historyStripEl.querySelector('.history-state.active');
+  if (historyIndex === 0) {
+    historyStripEl.scrollLeft = 0;
+  } else if (historyIndex === historyStates.length - 1) {
+    historyStripEl.scrollLeft = historyStripEl.scrollWidth;
+  } else if (active) {
+    active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  updateHistoryControls();
+}
+
+function pushHistoryState() {
+  const hex = scheme.toHexString();
+  if (historyIndex >= 0 && historyStates[historyIndex] === hex) {
+    renderHistoryTimeline();
+    return;
+  }
+
+  if (historyIndex < historyStates.length - 1) {
+    historyStates = historyStates.slice(0, historyIndex + 1);
+  }
+
+  historyStates.push(hex);
+  historyIndex = historyStates.length - 1;
+
+  if (historyStates.length > HISTORY_MAX_STATES) {
+    const overflow = historyStates.length - HISTORY_MAX_STATES;
+    historyStates.splice(0, overflow);
+    historyIndex = Math.max(0, historyIndex - overflow);
+  }
+
+  renderHistoryTimeline();
+}
+
+function setHistoryIndex(nextIndex) {
+  if (nextIndex < 0 || nextIndex >= historyStates.length || nextIndex === historyIndex) return;
+  try {
+    _clearHistoryDebounce();
+    historyIndex = nextIndex;
+    scheme.loadHexString(historyStates[historyIndex]);
+    refreshAll();
+    renderHistoryTimeline();
+  } catch (e) {
+    showToast('Failed to restore history state', 'error');
+  }
+}
+
+function undoHistory() {
+  if (historyIndex <= 0) return;
+  _clearHistoryDebounce();
+  setHistoryIndex(historyIndex - 1);
+}
+
+function redoHistory() {
+  if (historyIndex < 0 || historyIndex >= historyStates.length - 1) return;
+  _clearHistoryDebounce();
+  setHistoryIndex(historyIndex + 1);
+}
+
+function refreshAll({ recordHistory = false, debounceHistory = false } = {}) {
   grid.updateFromScheme(scheme);
   editor.setValue(format === 'xml' ? scheme.generateXML() : scheme.generateINI());
   const prop = grid.getActiveProp();
   if (prop) picker.setColor(scheme[prop]);
+  if (recordHistory) {
+    if (debounceHistory) _pushHistoryDebounced();
+    else {
+      _clearHistoryDebounce();
+      pushHistoryState();
+    }
+  }
+  else updateHistoryControls();
 }
 
 /* ---- Theme --------------------------------------------------------- */
@@ -220,7 +366,7 @@ function loadFromEditor() {
     const locked = grid.getLockedColumns();
     if (text.startsWith('<')) scheme.loadXML(text, locked);
     else scheme.loadINI(text, locked);
-    refreshAll();
+    refreshAll({ recordHistory: true });
     showToast('Loaded from editor', 'info');
   } catch (e) {
     showToast(e.message, 'error');
@@ -243,7 +389,7 @@ function randomise() {
       scheme[propName(col.id, suffix)] = shadeColour(scheme[baseProp], shade);
     }
   }
-  refreshAll();
+  refreshAll({ recordHistory: true });
   showToast('Randomised colours', 'info');
 }
 
@@ -257,7 +403,7 @@ function autoShade() {
       scheme[propName(col.id, suffix)] = shadeColour(scheme[baseProp], SHADE_MAP[suffix]);
     }
   }
-  refreshAll();
+  refreshAll({ recordHistory: true });
   showToast('Auto-shaded from base colours', 'info');
 }
 
@@ -270,7 +416,7 @@ function _applyEffect(fn, label) {
     if (locked.has(getColumnFromProp(p))) continue;
     scheme[p] = fn(scheme[p]);
   }
-  refreshAll();
+  refreshAll({ recordHistory: true });
   showToast(label, 'info');
 }
 
@@ -312,7 +458,7 @@ function effectGradient() {
     }
   }
 
-  refreshAll();
+  refreshAll({ recordHistory: true });
   showToast('Applied light→dark gradient', 'info');
 }
 
@@ -339,7 +485,7 @@ function effectInvert() {
   }
 
   for (const [p, v] of Object.entries(next)) scheme[p] = v;
-  refreshAll();
+  refreshAll({ recordHistory: true });
   showToast('Inverted colours', 'info');
 }
 
@@ -386,7 +532,7 @@ function effectHarmonise() {
     }
     i++;
   }
-  refreshAll();
+  refreshAll({ recordHistory: true });
   showToast('Harmonised to analogous palette', 'info');
 }
 
@@ -426,7 +572,7 @@ function loadFromURL() {
   try {
     const hex = atob(decodeURIComponent(b64));
     scheme.loadHexString(hex);
-    refreshAll();
+    refreshAll({ recordHistory: true });
     showToast('Loaded from shared link', 'info');
   } catch (e) {
     showToast('Invalid shared link', 'error');
@@ -459,7 +605,7 @@ function loadFromStorage(name) {
     const data = localStorage.getItem(LS_PREFIX + name);
     if (!data) return showToast('Not found', 'error');
     scheme.loadHexString(data);
-    refreshAll();
+    refreshAll({ recordHistory: true });
     showToast(`Loaded "${name}"`, 'info');
   } catch (e) {
     showToast(e.message, 'error');

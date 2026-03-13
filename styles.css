@@ -534,6 +534,11 @@ button { cursor: pointer; }
   overflow: auto;
 }
 
+.panel-grid #grid-panel {
+  flex: 1;
+  min-height: 0;
+}
+
 .color-grid {
   flex: 1;
   min-height: 0;
@@ -667,6 +672,95 @@ button { cursor: pointer; }
 }
 
 .grid-cell-empty:hover { transform: none; }
+
+.grid-history {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+}
+
+.history-strip {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.2rem 0.05rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.history-strip::-webkit-scrollbar {
+  height: 6px;
+}
+
+.history-strip::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.history-strip::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+.history-strip::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
+.history-state {
+  width: 36px;
+  height: 36px;
+  padding: 2px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  flex: 0 0 auto;
+  background: var(--bg-input);
+  opacity: 0.88;
+}
+
+.history-state:hover {
+  border-color: var(--accent);
+  opacity: 1;
+}
+
+.history-state.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+  opacity: 1;
+}
+
+.history-mini {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 1px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.history-mini-cell {
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg-input);
+}
+
+.history-mini-cell.empty {
+  background: var(--grid-empty);
+  opacity: 0.35;
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: default;
+  pointer-events: none;
+}
 
 /* ---- Code Editor Panel --------------------------------------------- */
 
