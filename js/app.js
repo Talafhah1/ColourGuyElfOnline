@@ -709,7 +709,7 @@ function copyEditor() {
 }
 
 function downloadFile() {
-  const ext  = format === 'xml' ? 'xml' : 'cfg';
+  const ext  = format === 'xml' ? 'xml' : 'wcolor';
   const mime = format === 'xml' ? 'text/xml' : 'text/plain';
   const blob = new Blob([editor.getValue()], { type: mime });
   const a = document.createElement('a');
