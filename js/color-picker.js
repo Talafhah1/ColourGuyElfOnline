@@ -28,6 +28,7 @@ export class ColorPicker {
     this._sliderMode = 'hsb';
     this._dragging = null;
     this._sliders = {};
+    this._modelCache = { cmyk: null, lab: null };
     this._transformBtns = {};
     this._build();
     this._switchCanvas(this._canvasMode);
@@ -499,6 +500,7 @@ export class ColorPicker {
   }
 
   _afterDrag() {
+    this._clearModelCache();
     this._drawCanvas();
     this._syncSliders();
     this._syncHex();
@@ -592,8 +594,20 @@ export class ColorPicker {
     let vals;
     if (mode === 'hsb')      vals = { H: Math.round(this._h), S: Math.round(this._s), B: Math.round(this._v) };
     else if (mode === 'rgb' || isHex) vals = { R: r, G: g, B: b };
-    else if (mode === 'cmyk') { const [c, m, y, k] = rgbToCmyk(r, g, b); vals = { C: c, M: m, Y: y, K: k }; }
-    else if (mode === 'lab')  { const [L, a, bL] = rgbToLab(r, g, b); vals = { L, a, b: bL }; }
+    else if (mode === 'cmyk') {
+      if (this._modelCache.cmyk) vals = { ...this._modelCache.cmyk };
+      else {
+        const [c, m, y, k] = rgbToCmyk(r, g, b);
+        vals = { C: c, M: m, Y: y, K: k };
+      }
+    }
+    else if (mode === 'lab')  {
+      if (this._modelCache.lab) vals = { ...this._modelCache.lab };
+      else {
+        const [L, a, bL] = rgbToLab(r, g, b);
+        vals = { L, a, b: bL };
+      }
+    }
 
     for (const [key, sl] of Object.entries(this._sliders)) {
       const v = vals[key] ?? 0;
@@ -664,20 +678,31 @@ export class ColorPicker {
     };
 
     if (mode === 'hsb') {
+      this._clearModelCache();
       this._h = this._clamp(v('H'), 0, 360);
       this._s = this._clamp(v('S'), 0, 255);
       this._v = this._clamp(v('B'), 0, 255);
     } else if (mode === 'rgb' || isHex) {
+      this._clearModelCache();
       [this._h, this._s, this._v] = rgbToHsv(
         this._clamp(v('R'), 0, 255), this._clamp(v('G'), 0, 255), this._clamp(v('B'), 0, 255));
     } else if (mode === 'cmyk') {
-      const [r, g, b] = cmykToRgb(this._clamp(v('C'), 0, 100), this._clamp(v('M'), 0, 100),
-        this._clamp(v('Y'), 0, 100), this._clamp(v('K'), 0, 100));
+      const c = this._clamp(v('C'), 0, 100);
+      const m = this._clamp(v('M'), 0, 100);
+      const y = this._clamp(v('Y'), 0, 100);
+      const k = this._clamp(v('K'), 0, 100);
+      this._modelCache.cmyk = { C: c, M: m, Y: y, K: k };
+      this._modelCache.lab = null;
+      const [r, g, b] = cmykToRgb(c, m, y, k);
       [this._h, this._s, this._v] = rgbToHsv(r, g, b);
     } else if (mode === 'lab') {
-      const [r, g, b] = labToRgb(this._clamp(v('L'), 0, 100), this._clamp(v('a'), -128, 127),
-        this._clamp(v('b'), -128, 127));
-      [this._h, this._s, this._v] = rgbToHsv(r, g, b);
+      const L = this._clamp(v('L'), 0, 100);
+      const a = this._clamp(v('a'), -128, 127);
+      const b = this._clamp(v('b'), -128, 127);
+      this._modelCache.lab = { L, a, b };
+      this._modelCache.cmyk = null;
+      const [r, g, bl] = labToRgb(L, a, b);
+      [this._h, this._s, this._v] = rgbToHsv(r, g, bl);
     }
 
     this._drawCanvas();
@@ -736,6 +761,7 @@ export class ColorPicker {
   _onHexInput() {
     const v = this._hexIn.value.trim().replace(/^#/, '');
     if (/^[0-9A-Fa-f]{6}$/.test(v)) {
+      this._clearModelCache();
       const n = parseInt(v, 16);
       [this._h, this._s, this._v] = rgbToHsv((n >> 16) & 0xFF, (n >> 8) & 0xFF, n & 0xFF);
       this._drawCanvas();
@@ -750,6 +776,7 @@ export class ColorPicker {
   /* ================================================================== */
 
   _fullSync() {
+    this._clearModelCache();
     this._drawCanvas();
     this._syncSliders();
     this._syncHex();
@@ -782,4 +809,5 @@ export class ColorPicker {
 
   _emit() { if (this._changeCb) this._changeCb(this.getColor()); }
   _clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, Math.round(v))); }
+  _clearModelCache() { this._modelCache.cmyk = null; this._modelCache.lab = null; }
 }

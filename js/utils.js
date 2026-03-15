@@ -85,36 +85,50 @@ export function degrees(radians) {
 }
 
 export function rgbToHsv(r, g, b) {
-  const max = Math.max(r, g, b);
-  const min = Math.min(r, g, b);
-  const v = max / 255;
-  const s = max > 0 ? 1 - min / max : 0;
-  let h;
-  if (r === g && g === b) {
-    h = 0;
-  } else {
-    h = Math.acos((r - g / 2 - b / 2) / Math.sqrt(r * r + g * g + b * b - r * g - r * b - g * b));
-    h = degrees(h);
+  const rn = Math.max(0, Math.min(255, r)) / 255;
+  const gn = Math.max(0, Math.min(255, g)) / 255;
+  const bn = Math.max(0, Math.min(255, b)) / 255;
+
+  const max = Math.max(rn, gn, bn);
+  const min = Math.min(rn, gn, bn);
+  const d = max - min;
+
+  let h = 0;
+  if (d !== 0) {
+    if (max === rn) h = ((gn - bn) / d) % 6;
+    else if (max === gn) h = (bn - rn) / d + 2;
+    else h = (rn - gn) / d + 4;
+    h *= 60;
+    if (h < 0) h += 360;
   }
-  if (b > g) h = 360 - h;
+
+  const s = max === 0 ? 0 : d / max;
+  const v = max;
   return [h, s * 255, v * 255];
 }
 
 export function hsvToRgb(h, s, v) {
-  const max = v;
-  const min = max * (1 - s / 255);
-  const z = (max - min) * (1 - Math.abs((h / 60) % 2 - 1));
-  let r, g, b;
-  if (h >= 0 && h < 300) {
-    if (h < 60)       { r = max;     g = z + min; b = min;     }
-    else if (h < 120) { r = z + min; g = max;     b = min;     }
-    else if (h < 180) { r = min;     g = max;     b = z + min; }
-    else if (h < 240) { r = min;     g = z + min; b = max;     }
-    else              { r = z + min; g = min;     b = max;     }
-  } else {
-    r = max; g = min; b = z + min;
-  }
-  return [Math.round(r), Math.round(g), Math.round(b)];
+  const hh = ((h % 360) + 360) % 360;
+  const ss = Math.max(0, Math.min(255, s)) / 255;
+  const vv = Math.max(0, Math.min(255, v)) / 255;
+
+  const c = vv * ss;
+  const x = c * (1 - Math.abs((hh / 60) % 2 - 1));
+  const m = vv - c;
+
+  let rp = 0, gp = 0, bp = 0;
+  if (hh < 60)       { rp = c; gp = x; bp = 0; }
+  else if (hh < 120) { rp = x; gp = c; bp = 0; }
+  else if (hh < 180) { rp = 0; gp = c; bp = x; }
+  else if (hh < 240) { rp = 0; gp = x; bp = c; }
+  else if (hh < 300) { rp = x; gp = 0; bp = c; }
+  else               { rp = c; gp = 0; bp = x; }
+
+  return [
+    Math.round((rp + m) * 255),
+    Math.round((gp + m) * 255),
+    Math.round((bp + m) * 255),
+  ];
 }
 
 export function shadeColour(colour, shade) {
